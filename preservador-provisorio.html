@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OMNIH | Protocolo Privado del Preservador</title>
+  <style>
+    :root {
+      --bg-light: #ffffff;
+      --panel-bg: #f8fafc;
+      --accent-gold: #C5A059;
+      --accent-blue: #0284c7;
+      --accent-blue-light: #e0f2fe;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --btn-gray: #f1f5f9;
+      --btn-gray-text: #334155;
+      --alert-red: #b91c1c;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background-color: var(--bg-light); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* HEADER SUPERIOR HUD CON ESLOGAN DORADO */
+    header { background: #ffffff; border-bottom: 1px solid var(--border-color); padding: 12px 20px; position: sticky; top: 0; z-index: 20; }
+    .header-content { display: flex; align-items: center; justify-content: space-between; max-width: 850px; margin: 0 auto; width: 100%; }
+    .header-left { display: flex; align-items: center; gap: 15px; }
+    .hamburger-btn { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-main); }
+    .brand-block { display: flex; flex-direction: column; }
+    .brand-title { font-size: 1.4rem; font-weight: 800; letter-spacing: 2px; color: var(--accent-gold); line-height: 1; }
+    .brand-slogan { font-size: 0.75rem; color: var(--accent-gold); font-weight: 600; margin-top: 4px; letter-spacing: 0.3px; }
+    .config-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); }
+
+    /* CONTENEDOR PRINCIPAL */
+    main { flex: 1; max-width: 850px; width: 100%; margin: 0 auto; padding: 25px 20px 120px 20px; display: flex; flex-direction: column; gap: 22px; }
+
+    /* PERFIL DEL PRESERVADOR CON ETIQUETAS SEPARADAS */
+    .profile-hero { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+    .carousel-strip { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
+    .carousel-thumb { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border-color); flex-shrink: 0; background: #e2e8f0; }
+
+    .user-info { display: flex; align-items: center; gap: 15px; }
+    .user-photo { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; border: 2px solid var(--accent-gold); background: #cbd5e1; }
+    .user-details { display: flex; flex-direction: column; gap: 8px; }
+    .user-name { font-weight: 700; font-size: 1.15rem; color: var(--text-main); }
+    
+    /* BLOQUE DE ETIQUETAS INTERACTIVAS Y SEPARADAS */
+    .tags-container { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    
+    /* ETIQUETA 1: RANGO EVOLUTIVO DE CERTIFICACIÓN */
+    .rank-tag { font-size: 0.72rem; font-weight: 700; padding: 5px 12px; border-radius: 8px; background: var(--accent-blue-light); color: var(--accent-blue); border: 1px solid #bae6fd; width: fit-content; }
+    
+    /* ETIQUETA 2: MENÚ DESPLEGABLE DE VÍNCULO FILIAL */
+    .vinculo-tag { display: flex; align-items: center; gap: 4px; background: #ffffff; padding: 4px 10px; border-radius: 8px; border: 1px solid var(--border-color); width: fit-content; }
+    .vinculo-label { font-size: 0.72rem; font-weight: 700; color: var(--text-muted); }
+    .vinculo-select { background: transparent; border: none; font-size: 0.72rem; font-weight: 700; color: var(--accent-blue); outline: none; cursor: pointer; }
+    .vinculo-select option { color: var(--text-main); font-weight: 500; }
+
+    /* ÁREA CENTRAL DE CARGA Y REDACCIÓN */
+    .editor-card { background: #ffffff; border: 1px solid var(--border-color); border-radius: 12px; padding: 22px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.01); }
+    .editor-title { font-size: 0.9rem; font-weight: 700; color: var(--accent-gold); letter-spacing: 0.5px; text-transform: uppercase; }
+    textarea { width: 100%; min-height: 280px; border: 1px solid var(--border-color); border-radius: 8px; padding: 14px; font-size: 0.95rem; line-height: 1.6; outline: none; resize: vertical; background: #fafafa; }
+    textarea:focus { background: #ffffff; border-color: var(--accent-blue); }
+
+    .attachment-bar { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-color); padding-top: 14px; }
+    .clip-btn { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--text-muted); }
+    .action-btns { display: flex; gap: 10px; }
+    .btn-action { padding: 9px 16px; font-size: 0.8rem; font-weight: 600; border-radius: 6px; cursor: pointer; border: none; transition: background 0.2s; }
+    
+    .btn-archive { background: var(--btn-gray); color: var(--btn-gray-text); border: 1px solid var(--border-color); }
+    .btn-archive:hover { background: #e2e8f0; }
+    .btn-capsule { background: var(--panel-bg); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
+
+    /* SESIÓN OMNIHISTÓRICA DELIMITADA */
+    .session-box { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+    .session-header { font-size: 0.8rem; font-weight: 700; color: var(--text-main); display: flex; justify-content: space-between; align-items: center; }
+    .session-status { color: var(--accent-blue); cursor: pointer; font-weight: 600; font-size: 0.8rem; }
+    .session-chat-area { background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; height: 100px; padding: 10px; font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; justify-content: center; text-align: center; }
+
+    /* ETIQUETA AZUL DE IA FLOTANTE */
+    .ai-guidance-floating { position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 810px; background: #f0f9ff; border: 1px solid #bae6fd; border-left: 4px solid var(--accent-blue); padding: 10px 16px; border-radius: 8px; font-size: 0.78rem; color: #0369a1; line-height: 1.4; box-shadow: 0 4px 12px rgba(0,0,0,0.08); z-index: 15; }
+
+    /* MENÚ HAMBURGUESA DESPLEGABLE */
+    .drawer-panel { position: fixed; top: 0; left: -100%; width: 300px; height: 100vh; background: #ffffff; border-right: 1px solid var(--border-color); box-shadow: 4px 0 15px rgba(0,0,0,0.05); transition: left 0.3s ease; z-index: 30; padding: 20px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; }
+    .drawer-panel.active { left: 0; }
+    .drawer-title { font-size: 1.2rem; font-weight: 800; color: var(--accent-gold); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+    .drawer-section-label { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-top: 10px; }
+    .drawer-menu { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .drawer-menu li a { text-decoration: none; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; display: block; }
+
+    /* PIE DE PÁGINA CON LETRAS ROJAS MÍNIMAS Y SOBRIAS */
+    footer { padding: 16px 20px; background: #ffffff; border-top: 1px solid var(--border-color); text-align: center; }
+    .hash-badge { font-family: ui-monospace, monospace; background: var(--panel-bg); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); max-width: 850px; margin: 0 auto; display: flex; flex-direction: column; gap: 2px; }
+    .hash-title { font-size: 0.78rem; color: var(--text-muted); font-weight: 500; }
+    .human-cert { color: var(--alert-red); font-size: 0.58rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; opacity: 0.9; }
+  </style>
+</head>
+<body>
+
+  <!-- MENÚ HAMBURGUESA DESPLEGABLE -->
+  <div class="drawer-panel" id="drawer-menu">
+    <div class="drawer-title">OMNIH</div>
+    
+    <div class="drawer-section-label">Módulos del Protocolo</div>
+    <ul class="drawer-menu">
+      <li><a href="./index.html">1. Métricas Públicas</a></li>
+      <li><a href="#">2. Cápsula del Tiempo</a></li>
+      <li><a href="#">3. Archivo de Documentos</a></li>
+      <li><a href="#">4. Historias por Terminar</a></li>
+      <li><a href="#">5. Álbum de Fotos Reales</a></li>
+    </ul>
+  </div>
+
+  <!-- HEADER HUD CON ESLOGAN DORADO -->
+  <header>
+    <div class="header-content">
+      <div class="header-left">
+        <button class="hamburger-btn" onclick="toggleDrawer()">☰</button>
+        <div class="brand-block">
+          <div class="brand-title">OMNIH</div>
+          <div class="brand-slogan">"Desde el presente hacia el futuro, la historia de todos."</div>
+        </div>
+      </div>
+      <button class="config-btn" title="Configuración">⚙</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- PERFIL DEL PRESERVADOR CON RANGO EVOLUTIVO Y VÍNCULO FILIAL -->
+    <div class="profile-hero">
+      <div class="carousel-strip">
+        <div class="carousel-thumb"></div>
+        <div class="carousel-thumb"></div>
+        <div class="carousel-thumb"></div>
+      </div>
+      <div class="user-info">
+        <div class="user-photo"></div>
+        <div class="user-details">
+          <div class="user-name">Protocolo - <span id="user-firstname">Asdrúbal</span></div>
+          
+          <div class="tags-container">
+            <!-- 1. ETIQUETA DE RANGO (EVOLUCIONA AL CERTIFICAR LA ETAPA AUTOBIOGRÁFICA) -->
+            <div class="rank-tag" id="user-rank-status">Genehistoriador</div>
+
+            <!-- 2. ETIQUETA INDEPENDIENTE DE VÍNCULO FILIAL -->
+            <div class="vinculo-tag">
+              <span class="vinculo-label">Vínculo filial:</span>
+              <select class="vinculo-select" id="vinculo-select">
+                <option value="Hijo / Hija">Hijo / Hija</option>
+                <option value="Padre / Madre">Padre / Madre</option>
+                <option value="Cónyugue">Cónyugue</option>
+                <option value="Amigo / Amiga">Amigo / Amiga</option>
+                <option value="Colega">Colega</option>
+                <option value="Hermano / Hermana">Hermano / Hermana</option>
+                <option value="Nieto / Nieta">Nieto / Nieta</option>
+                <option value="Familia Extendida">Familia Extendida</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ÁREA CENTRAL DE CARGA Y REDACCIÓN -->
+    <div class="editor-card">
+      <div class="editor-title">Redacción y Registro Historiográfico</div>
+      <textarea placeholder="Escribe el relato o testimonio a resguardar en el protocolo..."></textarea>
+
+      <div class="attachment-bar">
+        <button class="clip-btn" title="Adjuntar documento o foto">📎</button>
+        <div class="action-btns">
+          <button class="btn-action btn-capsule">Cápsula del Tiempo</button>
+          <button class="btn-action btn-archive">Archivar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SESIÓN OMNIHISTÓRICA DELIMITADA -->
+    <div class="session-box">
+      <div class="session-header">
+        <span>Sesión Omnihistórica</span>
+        <span class="session-status">Activar Chat</span>
+      </div>
+      <div class="session-chat-area">
+        <em>Canal sobrio directo para el intercambio y verificación de teselas documentales.</em>
+      </div>
+    </div>
+  </main>
+
+  <!-- ETIQUETA AZUL DE IA FLOTANTE -->
+  <div class="ai-guidance-floating">
+    <strong>Guía Historiográfica IA:</strong> Define el marco situacional, fecha aproximada, ubicación geográfica y etiqueta a los participantes de este documento.
+  </div>
+
+  <!-- PIE DE PÁGINA CON TIPOGRAFÍA ROJA MÍNIMA Y SUBORDINADA -->
+  <footer>
+    <div class="hash-badge">
+      <div class="hash-title"><strong>Tesela:</strong> Serie del hash recombinante:</div>
+      <div class="human-cert">Certificación de presencia humana digital</div>
+    </div>
+  </footer>
+
+  <script>
+    function toggleDrawer() {
+      document.getElementById('drawer-menu').classList.toggle('active');
+    }
+  </script>
+</body>
+</html>
