@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OMNIH | Preservación Inmutable</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+  <style>
+    :root {
+      --bg-canvas: #edf2f7;
+      --card-bg: #ffffff;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --accent-gold: #c5a059;
+      --border-color: #e2e8f0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: var(--bg-canvas); color: var(--text-dark); padding: 1rem; }
+    
+    .app-frame {
+      max-width: 480px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border-radius: 24px;
+      border: 1px solid var(--border-color);
+      padding: 1.25rem 1rem;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+
+    .login-bar { display: flex; justify-content: flex-end; margin-bottom: 0.5rem; }
+    .btn-login-top {
+      background: #fff; border: 1.5px solid var(--accent-gold);
+      padding: 0.35rem 0.85rem; border-radius: 8px; font-weight: 700; font-size: 0.75rem; cursor: pointer;
+    }
+
+    .hud-header { display: flex; justify-content: space-between; align-items: center; }
+    .hud-badge { background: #f1f5f9; border: 1px solid #e2e8f0; color: var(--text-muted); font-size: 0.65rem; font-weight: 700; padding: 0.25rem 0.5rem; border-radius: 12px; }
+    .brand-title { font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; }
+
+    .hemisphere-titles { display: flex; justify-content: space-between; font-size: 0.65rem; font-weight: 800; color: var(--text-muted); margin: 0.6rem 0 0.2rem; padding: 0 0.5rem; }
+    
+    .maps-container { 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      gap: 0;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .map-globe {
+      width: 240px;
+      height: 240px;
+      flex-shrink: 0;
+      margin: 0;
+    }
+
+    .land { fill: #cbd5e1; stroke: #94a3b8; stroke-width: 0.4px; transition: fill 0.8s ease; }
+    .graticule { fill: none; stroke: #cbd5e1; stroke-width: 0.5px; stroke-dasharray: 2,2; }
+    .sphere { fill: #f8fafc; stroke: #94a3b8; stroke-width: 1.2px; }
+    
+    .country-active { fill: #10b981 !important; }
+
+    .compass-wrapper { 
+      text-align: center; 
+      margin-top: -18px; 
+      position: relative; 
+      z-index: 2; 
+      pointer-events: none;
+    }
+
+    .info-card { border: 1px solid var(--border-color); border-radius: 16px; padding: 1.1rem; margin-top: 0.4rem; }
+    
+    .card-title { font-size: 1.05rem; font-weight: 900; line-height: 1.25; }
+    
+    .counter-number {
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: var(--text-dark);
+      display: inline-block;
+      transition: transform 0.3s ease, color 0.3s ease;
+    }
+    .counter-pulse {
+      transform: scale(1.3);
+      color: var(--accent-gold);
+    }
+
+    .card-sub { font-size: 0.82rem; color: var(--text-muted); margin: 0.35rem 0 0.8rem; }
+    .manifesto { font-size: 0.8rem; color: #334155; line-height: 1.45; margin-bottom: 0.8rem; }
+    
+    .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; text-align: center; }
+    .metric-unit { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; padding: 0.6rem 0.2rem; }
+    .metric-val { font-size: 0.9rem; font-weight: 900; display: block; transition: all 0.3s ease; }
+    .metric-lbl { font-size: 0.62rem; color: var(--text-muted); display: block; }
+
+    .btn-text-gold {
+      background: none;
+      border: none;
+      color: var(--accent-gold);
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-block;
+      padding: 0.3rem 0.8rem;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-text-gold:active {
+      transform: scale(0.95);
+      opacity: 0.75;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-frame">
+    <div class="login-bar">
+      <button class="btn-login-top" onclick="navegarA('vista-login')">Iniciar sesión</button>
+    </div>
+
+    <div class="hud-header">
+      <span class="hud-badge">RED: ÓPTIMA</span>
+      <h1 class="brand-title">OMNIH</h1>
+      <span class="hud-badge">TIEMPO UTC: 10:24 AM</span>
+    </div>
+
+    <div class="hemisphere-titles">
+      <span>HEMISFERIO OCCIDENTAL</span>
+      <span>HEMISFERIO ORIENTAL</span>
+    </div>
+
+    <div class="maps-container">
+      <div id="map-west" class="map-globe"></div>
+      <div id="map-east" class="map-globe"></div>
+    </div>
+
+    <div class="compass-wrapper">
+      <canvas id="miRosa" width="84" height="84"></canvas>
+    </div>
+
+    <div class="info-card">
+      <h2 class="card-title">
+        COBERTURA GLOBAL OMNHISTORIA:<br>
+        <span id="num-paises" class="counter-number">0</span> PAÍSES INCORPORADOS
+      </h2>
+      <p class="card-sub" id="lista-paises">Esperando señales de registro...</p>
+
+      <div class="manifesto">
+        <strong>MANIFIESTO PROVISIONAL</strong><br>
+        OMNIH será un protocolo descentralizado para resguardar la memoria e historia de forma inmutable. Reseñamos los componentes Omnihistoricos del gran mosaico de la humanidad, con un Fondo de preservación de la data, autosostenible.
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-unit">
+          <span class="metric-lbl">Almacenamiento</span>
+          <span class="metric-val" id="val-storage">0.00 TB</span>
+          <span class="metric-lbl">(Resguardados)</span>
+        </div>
+        <div class="metric-unit">
+          <span class="metric-lbl">Inmutabilidad</span>
+          <span class="metric-val" id="val-inmutable">0.0%</span>
+          <span class="metric-lbl">(SHA-256)</span>
+        </div>
+        <div class="metric-unit">
+          <span class="metric-lbl">Interacciones</span>
+          <span class="metric-val" id="val-interact">0</span>
+          <span class="metric-lbl">(Mes)</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 1rem; margin-bottom: 0.2rem;">
+      <span style="font-size: 0.7rem; font-weight: 800; color: var(--text-muted); letter-spacing: 0.5px; display: block; margin-bottom: 0.2rem;">
+        REGISTRARME
+      </span>
+      <button class="btn-text-gold" onclick="navegarA('vista-registro')">
+        Unirme al Protocolo
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // ESTADO GLOBAL REACTIVO (CABLES DE DATOS LISTOS)
+    let paisesRegistrados = [];
+
+    // NAVEGACIÓN SIMPLE
+    function navegarA(vistaDestino) {
+      console.log("Navegando a:", vistaDestino);
+      // Aquí se activará el cambio a la interfaz de registro
+    }
+
+    // FUNCIÓN DE RECEPCIÓN DE DATOS (CONECTABLE AL FORMULARIO/API)
+    function registrarPais(idIso, nombre) {
+      if (!paisesRegistrados.some(p => p.id === idIso)) {
+        paisesRegistrados.push({ id: idIso, nombre: nombre });
+        
+        // Renderizado visual en mapa
+        d3.selectAll(`#country-${idIso}`).classed("country-active", true);
+        
+        // Recálculo dinámico de la interfaz pública
+        actualizarInterfazMetricas();
+      }
+    }
+
+    function actualizarInterfazMetricas() {
+      const numElem = document.getElementById('num-paises');
+      const listaElem = document.getElementById('lista-paises');
+      const count = paisesRegistrados.length;
+
+      numElem.classList.add('counter-pulse');
+      setTimeout(() => numElem.classList.remove('counter-pulse'), 300);
+      numElem.textContent = count;
+      
+      if (count === 0) {
+        listaElem.textContent = "Esperando señales de registro...";
+        document.getElementById('val-storage').textContent = "0.00 TB";
+        document.getElementById('val-inmutable').textContent = "0.0%";
+        document.getElementById('val-interact').textContent = "0";
+      } else {
+        const nombres = paisesRegistrados.map(p => p.nombre).join(', ');
+        listaElem.textContent = `Países Activos: ${nombres}`;
+
+        document.getElementById('val-storage').textContent = `${(count * 0.21).toFixed(2)} TB`;
+        document.getElementById('val-inmutable').textContent = `${Math.min(95.0 + (count * 0.8), 99.9).toFixed(1)}%`;
+        document.getElementById('val-interact').textContent = `${(count * 2.4).toFixed(1)}K`;
+      }
+    }
+
+    function dibujarRosa() {
+      const canvas = document.getElementById('miRosa');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      const r = (canvas.width * 0.38) * 0.70;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.strokeStyle = '#c5a059';
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, r * 0.95, 0, Math.PI * 2);
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(Math.PI / 4);
+      dibujarPuntas(ctx, 4, r * 0.2, r * 0.65, '#cbd5e1', '#94a3b8');
+      ctx.restore();
+
+      ctx.save();
+      ctx.translate(cx, cy);
+      dibujarPuntas(ctx, 4, r * 0.25, r * 0.9, '#d4af37', '#997a15');
+
+      ctx.font = 'bold 8px sans-serif';
+      ctx.fillStyle = '#1e293b';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('N', 0, -r * 0.73);
+      ctx.fillText('S', 0, r * 0.73);
+      ctx.fillText('E', r * 0.73, 0);
+      ctx.fillText('O', -r * 0.73, 0);
+
+      ctx.beginPath();
+      ctx.arc(0, 0, 3, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      ctx.strokeStyle = '#d4af37';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function dibujarPuntas(ctx, cant, rInt, rExt, cClaro, cOscuro) {
+      const paso = (Math.PI * 2) / cant;
+      for (let i = 0; i < cant; i++) {
+        const a = i * paso - Math.PI / 2;
+        const aMitad = a + paso / 2;
+        const aSig = a + paso;
+
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(Math.cos(a) * rExt, Math.sin(a) * rExt);
+        ctx.lineTo(Math.cos(aMitad) * rInt, Math.sin(aMitad) * rInt);
+        ctx.closePath();
+        ctx.fillStyle = cClaro;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(Math.cos(aSig) * rExt, Math.sin(aSig) * rExt);
+        ctx.lineTo(Math.cos(aMitad) * rInt, Math.sin(aMitad) * rInt);
+        ctx.closePath();
+        ctx.fillStyle = cOscuro;
+        ctx.fill();
+      }
+    }
+
+    dibujarRosa();
+
+    fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+      .then(res => res.json())
+      .then(world => {
+        const countries = topojson.feature(world, world.objects.countries);
+
+        function renderGlobe(containerId, centerLon) {
+          const width = 240, height = 240;
+          const radius = 118;
+          const projection = d3.geoOrthographic()
+            .scale(radius)
+            .translate([width / 2, height / 2])
+            .rotate([-centerLon, 0, 0]);
+
+          const path = d3.geoPath().projection(projection);
+          const svg = d3.select(containerId).append("svg")
+            .attr("viewBox", `0 0 ${width} ${height}`)
+            .attr("width", "100%")
+            .attr("height", "100%");
+
+          svg.append("circle")
+            .attr("cx", width/2).attr("cy", height/2).attr("r", radius)
+            .attr("class", "sphere");
+
+          svg.append("path")
+            .datum(d3.geoGraticule()())
+            .attr("class", "graticule")
+            .attr("d", path);
+
+          svg.selectAll("path.land")
+            .data(countries.features)
+            .enter().append("path")
+            .attr("class", d => {
+              const estaActivo = paisesRegistrados.some(p => p.id === d.id);
+              return `land ${estaActivo ? 'country-active' : ''}`;
+            })
+            .attr("id", d => `country-${d.id}`)
+            .attr("d", path);
+        }
+
+        renderGlobe("#map-west", -85);
+        renderGlobe("#map-east", 30);
+      });
+  </script>
+</body>
+  </html>
