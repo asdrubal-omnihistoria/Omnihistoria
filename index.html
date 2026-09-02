@@ -29,15 +29,32 @@
       overflow: hidden;
     }
 
-    .login-bar { display: flex; justify-content: flex-end; margin-bottom: 0.5rem; }
+    /* BARRA SUPERIOR INTEGRADA: LOGO A LA IZQUIERDA, BOTÓN A LA DERECHA */
+    .top-navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .brand-logo-img {
+      height: 38px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
     .btn-login-top {
-      background: #fff; border: 1.5px solid var(--accent-gold);
-      padding: 0.35rem 0.85rem; border-radius: 8px; font-weight: 700; font-size: 0.75rem; cursor: pointer;
+      background: #fff; 
+      border: 1.5px solid var(--accent-gold);
+      color: var(--accent-gold);
+      padding: 0.35rem 0.85rem; 
+      border-radius: 8px; 
+      font-weight: 700; 
+      font-size: 0.75rem; 
+      cursor: pointer;
     }
 
-    .hud-header { display: flex; justify-content: space-between; align-items: center; }
+    .hud-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
     .hud-badge { background: #f1f5f9; border: 1px solid #e2e8f0; color: var(--text-muted); font-size: 0.65rem; font-weight: 700; padding: 0.25rem 0.5rem; border-radius: 12px; }
-    .brand-title { font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; }
 
     .hemisphere-titles { display: flex; justify-content: space-between; font-size: 0.65rem; font-weight: 800; color: var(--text-muted); margin: 0.6rem 0 0.2rem; padding: 0 0.5rem; }
     
@@ -118,13 +135,17 @@
 <body>
 
   <div class="app-frame">
-    <div class="login-bar">
+    <!-- BARRA SUPERIOR SOBRIA -->
+    <div class="top-navbar">
+      <a href="index.html">
+        <img src="Screenshot_20260902-152157_1.jpg" alt="OMNIH" class="brand-logo-img">
+      </a>
       <button class="btn-login-top" onclick="navegarA('vista-login')">Iniciar sesión</button>
     </div>
 
+    <!-- METRICAS DE RED Y TIEMPO -->
     <div class="hud-header">
       <span class="hud-badge">RED: ÓPTIMA</span>
-      <h1 class="brand-title">OMNIH</h1>
       <span class="hud-badge">TIEMPO UTC: 10:24 AM</span>
     </div>
 
@@ -184,24 +205,16 @@
   </div>
 
   <script>
-    // ESTADO GLOBAL REACTIVO (CABLES DE DATOS LISTOS)
     let paisesRegistrados = [];
 
-    // NAVEGACIÓN SIMPLE
     function navegarA(vistaDestino) {
       console.log("Navegando a:", vistaDestino);
-      // Aquí se activará el cambio a la interfaz de registro
     }
 
-    // FUNCIÓN DE RECEPCIÓN DE DATOS (CONECTABLE AL FORMULARIO/API)
     function registrarPais(idIso, nombre) {
       if (!paisesRegistrados.some(p => p.id === idIso)) {
         paisesRegistrados.push({ id: idIso, nombre: nombre });
-        
-        // Renderizado visual en mapa
         d3.selectAll(`#country-${idIso}`).classed("country-active", true);
-        
-        // Recálculo dinámico de la interfaz pública
         actualizarInterfazMetricas();
       }
     }
@@ -223,7 +236,6 @@
       } else {
         const nombres = paisesRegistrados.map(p => p.nombre).join(', ');
         listaElem.textContent = `Países Activos: ${nombres}`;
-
         document.getElementById('val-storage').textContent = `${(count * 0.21).toFixed(2)} TB`;
         document.getElementById('val-inmutable').textContent = `${Math.min(95.0 + (count * 0.8), 99.9).toFixed(1)}%`;
         document.getElementById('val-interact').textContent = `${(count * 2.4).toFixed(1)}K`;
@@ -353,4 +365,4 @@
       });
   </script>
 </body>
-  </html>
+</html>
