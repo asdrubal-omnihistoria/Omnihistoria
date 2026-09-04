@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OMNIH - Iniciar Sesión</title>
+  <style>
+    :root {
+      --bg-canvas: #edf2f7;
+      --card-bg: #ffffff;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --accent-gold: #c5a059;
+      --border-color: #e2e8f0;
+      --active-blue: #3182ce;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background: var(--bg-canvas);
+      color: var(--text-dark);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    .container {
+      background-color: var(--card-bg);
+      width: 100%;
+      max-width: 480px;
+      border-radius: 24px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      position: relative;
+      padding: 1.5rem 1.25rem;
+    }
+
+    /* BARRA SUPERIOR: SOLO ELEMENTO IDENTITARIO */
+    .top-navbar {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-bottom: 0.25rem;
+    }
+
+    .brand-logo-img {
+      height: 40px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* SUB-LÍNEA: PROTOCOLO - INICIAR SESIÓN */
+    .protocol-subbar {
+      margin-bottom: 1.25rem;
+      text-align: left;
+    }
+
+    .header-protocol-text {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      letter-spacing: 0.3px;
+    }
+
+    .form-body {
+      padding: 0;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-dark);
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      color: var(--text-dark);
+      outline: none;
+      background: #ffffff;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: #63b3ed;
+      box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.2);
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #90cdf4 0%, #bee3f8 50%, #ffffff 100%);
+      color: #1a365d;
+      border: 1px solid #90cdf4;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
+      margin-top: 10px;
+      box-shadow: 0 4px 12px rgba(144, 205, 244, 0.35);
+    }
+
+    .btn-submit:hover {
+      background: linear-gradient(135deg, #bee3f8 0%, #ebf8ff 60%, #ffffff 100%);
+      color: var(--active-blue);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(144, 205, 244, 0.5);
+    }
+
+    .quote-box {
+      background-color: #f8fafc;
+      border-left: 4px solid var(--accent-gold);
+      padding: 14px 16px;
+      margin-top: 24px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.85rem;
+      color: var(--text-dark);
+      line-height: 1.5;
+    }
+
+    .quote-text {
+      font-style: italic;
+      color: var(--text-muted);
+    }
+
+    .quote-source {
+      display: block;
+      margin-top: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- BARRA SUPERIOR: SOLO ELEMENTO IDENTITARIO -->
+  <div class="top-navbar">
+    <a href="index.html">
+      <img src="Screenshot_20260902-152157_1.jpg" alt="OMNIH" class="brand-logo-img">
+    </a>
+  </div>
+
+  <!-- LÍNEA INFERIOR: PROTOCOLO - INICIAR SESIÓN -->
+  <div class="protocol-subbar">
+    <span class="header-protocol-text">Protocolo - Iniciar Sesión</span>
+  </div>
+
+  <div class="form-body">
+    
+    <!-- FORMULARIO DE INICIO DE SESIÓN -->
+    <form id="formLogin" onsubmit="procesarInicioSesion(event)">
+
+      <div class="form-group">
+        <label for="loginEmail">Correo Electrónico</label>
+        <input type="email" id="loginEmail" placeholder="correo@ejemplo.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="loginPassword">Contraseña</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" required>
+      </div>
+
+      <button type="submit" class="btn-submit" id="btnLoginSubmit">Iniciar Sesión</button>
+    </form>
+
+    <!-- Frase Institucional de Bienvenida -->
+    <div class="quote-box">
+      <p class="quote-text">"Bienvenido, sumando para compilar la historia del futuro."</p>
+      <span class="quote-source">Fuente: Comunidad de la Omnihistoria. omnihistoria.io</span>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  async function generateHash(input) {
+    const msgUint8 = new TextEncoder().encode(input.toLowerCase().trim());
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function procesarInicioSesion(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+
+    if (!email || !password) {
+      alert("Por favor ingresa tu correo y contraseña.");
+      return;
+    }
+
+    const btnSubmit = document.getElementById('btnLoginSubmit');
+    btnSubmit.disabled = true;
+    btnSubmit.innerText = "Autenticando...";
+
+    try {
+      const userHash = await generateHash(`${email}_OMNIH_SALT_2026`);
+      sessionStorage.setItem('omnih_active_user', userHash);
+      sessionStorage.setItem('omnih_user_email', email);
+      sessionStorage.setItem('omnih_first_time', 'false');
+
+      setTimeout(() => {
+        window.location.href = 'interfaz-usuario.html';
+      }, 600);
+    } catch (error) {
+      console.error("Error al iniciar sesión:", error);
+      alert("Ocurrió un error al intentar autenticar.");
+      btnSubmit.disabled = false;
+      btnSubmit.innerText = "Iniciar Sesión";
+    }
+  }
+</script>
+</body>
+  </html>
