@@ -1,2 +1,2 @@
 # Omnihistoria
-OMNIH es un protocolo descentralizado para resguardar la memoria e historia de forma inmutable. Preserva los componentes omnihistóricos del gran mosaico de la humanidad
+OMNIH será un protocolo descentralizado, para resguardo la memoria digital de forma inmutable. Preservando los componentes de interés omnihistóricos, del gran mosaico de la humanidad
