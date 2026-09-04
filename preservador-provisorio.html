@@ -74,6 +74,7 @@
     .attachment-bar { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-color); padding-top: 14px; }
     .clip-btn { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--text-muted); }
     .action-btns { display: flex; gap: 10px; }
+    
     .btn-action { padding: 9px 16px; font-size: 0.8rem; font-weight: 600; border-radius: 6px; cursor: pointer; border: none; transition: background 0.2s; }
     
     .btn-archive { background: var(--btn-gray); color: var(--btn-gray-text); border: 1px solid var(--border-color); }
@@ -89,13 +90,30 @@
     /* ETIQUETA AZUL DE IA FLOTANTE */
     .ai-guidance-floating { position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 810px; background: #f0f9ff; border: 1px solid #bae6fd; border-left: 4px solid var(--accent-blue); padding: 10px 16px; border-radius: 8px; font-size: 0.78rem; color: #0369a1; line-height: 1.4; box-shadow: 0 4px 12px rgba(0,0,0,0.08); z-index: 15; }
 
+    /* FONDO OSCURO PARA CERRAR HACIENDO CLIC FUERA */
+    .drawer-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.4); z-index: 25; }
+    .drawer-overlay.active { display: block; }
+
     /* MENÚ HAMBURGUESA DESPLEGABLE */
-    .drawer-panel { position: fixed; top: 0; right: -100%; width: 300px; height: 100vh; background: #ffffff; border-left: 1px solid var(--border-color); box-shadow: -4px 0 15px rgba(0,0,0,0.05); transition: right 0.3s ease; z-index: 30; padding: 20px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; }
+    .drawer-panel { position: fixed; top: 0; right: -100%; width: 300px; height: 100vh; background: #ffffff; border-left: 1px solid var(--border-color); box-shadow: -4px 0 15px rgba(0,0,0,0.05); transition: right 0.3s ease; z-index: 30; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; overflow-y: auto; }
     .drawer-panel.active { right: 0; }
-    .drawer-title { font-size: 1.2rem; font-weight: 800; color: var(--accent-gold); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
-    .drawer-section-label { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-top: 10px; }
-    .drawer-menu { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-    .drawer-menu li a { text-decoration: none; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; display: block; }
+    
+    .drawer-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px; }
+    .drawer-title { font-size: 1.2rem; font-weight: 800; color: var(--accent-gold); }
+    
+    /* BOTÓN X PARA CERRAR */
+    .btn-close-drawer { background: none; border: none; font-size: 1.5rem; font-weight: 700; color: var(--text-muted); cursor: pointer; padding: 0 4px; line-height: 1; transition: color 0.2s ease; }
+    .btn-close-drawer:hover { color: var(--text-main); }
+
+    .drawer-section-label { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; }
+    .drawer-menu { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .drawer-menu li a { text-decoration: none; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; display: block; padding: 8px 10px; border-radius: 6px; transition: background 0.2s, color 0.2s; }
+    .drawer-menu li a:hover { background-color: var(--accent-blue-light); color: var(--accent-blue); }
+
+    /* BOTÓN CERRAR SESIÓN */
+    .drawer-footer { border-top: 1px solid var(--border-color); padding-top: 15px; margin-top: 20px; }
+    .btn-logout { display: block; width: 100%; padding: 10px; text-align: center; background-color: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px; color: var(--alert-red); font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: background 0.2s ease; }
+    .btn-logout:hover { background-color: #fff5f5; }
 
     /* PIE DE PÁGINA CON TIPOGRAFÍA ROJA MÍNIMA Y SUBORDINADA */
     footer { padding: 16px 20px; background: #ffffff; border-top: 1px solid var(--border-color); text-align: center; }
@@ -106,26 +124,38 @@
 </head>
 <body>
 
+  <!-- FONDO OSCURO PARA CERRAR EL MENÚ HACIENDO CLIC FUERA -->
+  <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+
   <!-- MENÚ HAMBURGUESA DESPLEGABLE (DESDE LA DERECHA) -->
-  <div class="drawer-panel" id="drawer-menu">
-    <div class="drawer-title">OMNIH</div>
-    
-    <div class="drawer-section-label">Módulos del Protocolo</div>
-    <ul class="drawer-menu">
-      <li><a href="./index.html">1. Métricas Públicas</a></li>
-      <li><a href="#">2. Cápsula del Tiempo</a></li>
-      <li><a href="#">3. Archivo de Documentos</a></li>
-      <li><a href="#">4. Historias por Terminar</a></li>
-      <li><a href="#">5. Álbum de Fotos Reales</a></li>
-    </ul>
-  </div>
+  <aside class="drawer-panel" id="drawer-menu">
+    <div>
+      <div class="drawer-header">
+        <span class="drawer-title">OMNIH</span>
+        <button type="button" class="btn-close-drawer" onclick="closeDrawer()" aria-label="Cerrar menú">&times;</button>
+      </div>
+      
+      <div class="drawer-section-label">Módulos del Protocolo</div>
+      <ul class="drawer-menu">
+        <li><a href="indice.html">1. Métricas Públicas</a></li>
+        <li><a href="preservador-provis.html">2. Cápsula del Tiempo</a></li>
+        <li><a href="carga.html">3. Archivo de Documentos</a></li>
+        <li><a href="#">4. Historias por Terminar</a></li>
+        <li><a href="#">5. Álbum de Fotos Reales</a></li>
+      </ul>
+    </div>
+
+    <div class="drawer-footer">
+      <a href="login.html" class="btn-logout" onclick="logout()">Cerrar Sesión</a>
+    </div>
+  </aside>
 
   <!-- HEADER CON ELEMENTO IDENTITARIO A LA IZQUIERDA Y HAMBURGUESA A LA DERECHA -->
   <header>
     <div class="header-content">
       <!-- Arriba a la Izquierda: Elemento identitario OMNIH -->
       <div class="header-left">
-        <a href="index.html">
+        <a href="indice.html">
           <img src="Screenshot_20260902-152157_1.jpg" alt="OMNIH" class="brand-logo-img">
         </a>
       </div>
@@ -133,7 +163,7 @@
       <!-- Arriba a la Derecha: Configuración y Menú Hamburguesa -->
       <div class="header-right">
         <button class="config-btn" title="Configuración">⚙</button>
-        <button class="hamburger-btn" onclick="toggleDrawer()">☰</button>
+        <button class="hamburger-btn" onclick="openDrawer()">☰</button>
       </div>
     </div>
   </header>
@@ -220,9 +250,19 @@
   </footer>
 
   <script>
-    function toggleDrawer() {
-      document.getElementById('drawer-menu').classList.toggle('active');
+    function openDrawer() {
+      document.getElementById('drawer-menu').classList.add('active');
+      document.getElementById('drawer-overlay').classList.add('active');
+    }
+
+    function closeDrawer() {
+      document.getElementById('drawer-menu').classList.remove('active');
+      document.getElementById('drawer-overlay').classList.remove('active');
+    }
+
+    function logout() {
+      sessionStorage.clear();
     }
   </script>
 </body>
-</html>
+        </html>
