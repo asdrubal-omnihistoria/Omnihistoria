@@ -3,93 +3,99 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OMNIH - Registro y Acceso</title>
+  <title>OMNIH - Registro</title>
   <style>
+    :root {
+      --bg-canvas: #edf2f7;
+      --card-bg: #ffffff;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --accent-gold: #c5a059;
+      --border-color: #e2e8f0;
+      --active-blue: #3182ce;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: system-ui, -apple-system, sans-serif;
     }
 
     body {
-      background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
-      color: #2d3748;
+      background: var(--bg-canvas);
+      color: var(--text-dark);
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: 20px;
+      padding: 1rem;
     }
 
     .container {
-      background-color: #ffffff;
+      background-color: var(--card-bg);
       width: 100%;
       max-width: 480px;
-      border-radius: 16px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+      border-radius: 24px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
       overflow: hidden;
-      border: 1px solid #e2e8f0;
+      border: 1px solid var(--border-color);
       position: relative;
+      padding: 1.5rem 1.25rem;
     }
 
-    /* Encabezado con Identidad Gráfica y Eslogan */
-    .header {
-      background: linear-gradient(180deg, #ebf8ff 0%, #ffffff 100%);
-      padding: 24px 20px 18px 20px;
-      text-align: center;
-      border-bottom: 2px solid #ecc94b;
-    }
-
-    .brand-logo {
-      max-width: 260px;
-      width: 85%;
-      height: auto;
-      display: block;
-      margin: 0 auto;
-      border-radius: 4px;
-    }
-
-    .slogan {
-      font-family: 'Georgia', serif;
-      font-size: 0.88rem;
-      color: #b7791f;
-      margin-top: 12px;
-      letter-spacing: 0.5px;
-      font-style: italic;
-      font-weight: 600;
-      line-height: 1.3;
-    }
-
-    .tab-nav {
+    /* BARRA SUPERIOR: ELEMENTO IDENTITARIO + INICIAR SESIÓN */
+    .top-navbar {
       display: flex;
-      background-color: #f7fafc;
-      border-bottom: 1px solid #e2e8f0;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.25rem;
     }
 
-    .tab-btn {
-      flex: 1;
-      padding: 14px;
+    .brand-logo-img {
+      height: 40px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .btn-top-login {
       background: none;
-      border: none;
+      border: 1px solid var(--border-color);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
       font-weight: 700;
-      color: #718096;
+      color: var(--text-muted);
       cursor: pointer;
-      transition: all 0.25s ease;
-      font-size: 0.9rem;
-      letter-spacing: 1px;
+      transition: all 0.2s ease;
+      text-decoration: none;
     }
 
-    .tab-btn.active {
-      color: #3182ce;
-      background-color: #ffffff;
-      border-bottom: 3px solid #63b3ed;
+    .btn-top-login:hover {
+      border-color: var(--active-blue);
+      color: var(--active-blue);
+      background-color: #f8fafc;
+    }
+
+    /* SUB-LÍNEA: PROTOCOLO - REGISTRO */
+    .protocol-subbar {
+      margin-bottom: 1.25rem;
+      text-align: left;
+    }
+
+    .header-protocol-text {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      letter-spacing: 0.3px;
     }
 
     .form-body {
-      padding: 24px;
+      padding: 0;
     }
 
+    /* SELECTOR DE ENTIDAD (PERSONA NATURAL / COLECTIVO) */
     .entity-selector {
       display: flex;
       gap: 10px;
@@ -99,12 +105,12 @@
     .btn-entity {
       flex: 1;
       padding: 11px;
-      border: 1px solid #cbd5e0;
-      background-color: #f7fafc;
+      border: 1px solid var(--border-color);
+      background-color: #f8fafc;
       border-radius: 8px;
       font-size: 0.85rem;
       font-weight: 600;
-      color: #4a5568;
+      color: var(--text-muted);
       cursor: pointer;
       transition: all 0.2s ease;
     }
@@ -112,7 +118,7 @@
     .btn-entity.active {
       background-color: #ebf8ff;
       border-color: #63b3ed;
-      color: #2b6cb0;
+      color: var(--active-blue);
     }
 
     .form-group {
@@ -124,16 +130,16 @@
       font-size: 0.85rem;
       font-weight: 600;
       margin-bottom: 6px;
-      color: #4a5568;
+      color: var(--text-dark);
     }
 
     .form-group input {
       width: 100%;
       padding: 12px 14px;
-      border: 1px solid #cbd5e0;
+      border: 1px solid var(--border-color);
       border-radius: 8px;
       font-size: 0.95rem;
-      color: #2d3748;
+      color: var(--text-dark);
       outline: none;
       background: #ffffff;
       transition: border-color 0.2s;
@@ -146,7 +152,7 @@
 
     .pwd-hint {
       font-size: 0.75rem;
-      color: #718096;
+      color: var(--text-muted);
       margin-top: 4px;
     }
 
@@ -167,25 +173,25 @@
 
     .btn-submit:hover {
       background: linear-gradient(135deg, #bee3f8 0%, #ebf8ff 60%, #ffffff 100%);
-      color: #2b6cb0;
+      color: var(--active-blue);
       transform: translateY(-1px);
       box-shadow: 0 6px 16px rgba(144, 205, 244, 0.5);
     }
 
     .quote-box {
-      background-color: #f7fafc;
-      border-left: 4px solid #d69e2e;
+      background-color: #f8fafc;
+      border-left: 4px solid var(--accent-gold);
       padding: 14px 16px;
-      margin-top: 22px;
+      margin-top: 24px;
       border-radius: 0 8px 8px 0;
       font-size: 0.85rem;
-      color: #2d3748;
+      color: var(--text-dark);
       line-height: 1.5;
     }
 
     .quote-text {
       font-style: italic;
-      color: #4a5568;
+      color: var(--text-muted);
     }
 
     .quote-source {
@@ -193,10 +199,10 @@
       margin-top: 8px;
       font-size: 0.78rem;
       font-weight: 700;
-      color: #b7791f;
+      color: var(--accent-gold);
     }
 
-    /* Modal / Pantalla de Confirmación de Correo Enviado */
+    /* MODAL DE CONFIRMACIÓN DE CORREO */
     .modal-confirmacion {
       display: none;
       position: absolute;
@@ -221,25 +227,25 @@
     .modal-title {
       font-size: 1.2rem;
       font-weight: 700;
-      color: #2b6cb0;
+      color: var(--active-blue);
       margin-bottom: 10px;
     }
 
     .modal-text {
       font-size: 0.9rem;
-      color: #4a5568;
+      color: var(--text-muted);
       line-height: 1.5;
       margin-bottom: 20px;
     }
 
     .modal-email {
       font-weight: 700;
-      color: #b7791f;
+      color: var(--accent-gold);
     }
 
     .btn-simular-link {
       padding: 12px 20px;
-      background: #3182ce;
+      background: var(--active-blue);
       color: #ffffff;
       border: none;
       border-radius: 8px;
@@ -255,43 +261,47 @@
 
 <div class="container">
   
-  <!-- Encabezado con Identidad Gráfica y Eslogan Exclusivo -->
-  <div class="header">
-    <img src="logo.jpg" alt="OMNIH Protocolo" class="brand-logo">
-    <p class="slogan">"Desde el presente hacia el futuro, la historia de todos"</p>
+  <!-- BARRA SUPERIOR: LOGO IZQUIERDA | INICIAR SESIÓN DERECHA -->
+  <div class="top-navbar">
+    <a href="index.html">
+      <img src="Screenshot_20260902-152157_1.jpg" alt="OMNIH" class="brand-logo-img">
+    </a>
+    <a href="login.html" class="btn-top-login">Iniciar sesión</a>
   </div>
 
-  <div class="tab-nav">
-    <button type="button" class="tab-btn active" id="tabRegister" onclick="switchMainTab('register')">REGISTRO</button>
-    <button type="button" class="tab-btn" id="tabLogin" onclick="switchMainTab('login')">INICIAR SESIÓN</button>
+  <!-- LÍNEA INFERIOR: PROTOCOLO - REGISTRO -->
+  <div class="protocol-subbar">
+    <span class="header-protocol-text">Protocolo - Registro</span>
   </div>
 
   <div class="form-body">
     
-    <!-- REGISTRO -->
+    <!-- FORMULARIO DE REGISTRO -->
     <form id="formRegister" onsubmit="procesarRegistro(event)">
+
+      <!-- SELECTOR: PERSONA NATURAL / COLECTIVO JURÍDICO -->
       <div class="entity-selector">
         <button type="button" class="btn-entity active" id="btnNatural" onclick="seleccionarTipo('natural')">Persona Natural</button>
         <button type="button" class="btn-entity" id="btnJuridica" onclick="seleccionarTipo('juridica')">Colectivo / Jurídica</button>
       </div>
 
       <div class="form-group">
-        <label id="lblNombre">Nombre Completo del Titular</label>
+        <label id="lblNombre" for="regNombre">Nombre Completo del Titular</label>
         <input type="text" id="regNombre" placeholder="Nombre y Apellido" required>
       </div>
 
       <div class="form-group" id="groupCargo" style="display: none;">
-        <label>Cargo o Representación</label>
+        <label for="regCargo">Cargo o Representación</label>
         <input type="text" id="regCargo" placeholder="Ej. Director, Apoderado">
       </div>
 
       <div class="form-group">
-        <label>Correo Electrónico</label>
+        <label for="regEmail">Correo Electrónico</label>
         <input type="email" id="regEmail" placeholder="correo@ejemplo.com" required>
       </div>
 
       <div class="form-group">
-        <label>Contraseña</label>
+        <label for="regPassword">Contraseña</label>
         <input type="password" id="regPassword" placeholder="••••••••" required minlength="8">
         <div class="pwd-hint">Mínimo 8 caracteres (debe incluir letras y números).</div>
       </div>
@@ -299,24 +309,9 @@
       <button type="submit" class="btn-submit" id="btnRegisterSubmit">Registrarme</button>
     </form>
 
-    <!-- INICIAR SESIÓN -->
-    <form id="formLogin" onsubmit="procesarAccesoDirecto(event)" style="display: none;">
-      <div class="form-group">
-        <label>Correo Electrónico</label>
-        <input type="email" id="loginEmail" placeholder="correo@ejemplo.com" required>
-      </div>
-
-      <div class="form-group">
-        <label>Contraseña</label>
-        <input type="password" id="loginPassword" placeholder="••••••••" required>
-      </div>
-
-      <button type="submit" class="btn-submit" id="btnLoginSubmit">Ingresar a mi Interfaz</button>
-    </form>
-
-    <!-- Frase Institucional y Fuente -->
+    <!-- Frase Institucional -->
     <div class="quote-box">
-      <p class="quote-text">"Al registrarte, tu nombre y el de tu familia, serán parte de la historia del futuro."</p>
+      <p class="quote-text">"Al registrarte te sumas al compromiso de hacer todo lo que este en nuestras posibilidades, para que tú nombre, el de tu familia y toda nuestra comunidad, sean parte de la historia del futuro."</p>
       <span class="quote-source">Fuente: Comunidad de la Omnihistoria. omnihistoria.io</span>
     </div>
 
@@ -331,7 +326,6 @@
       <br><br>
       Por favor revisa tu bandeja de entrada y haz clic en el enlace adjunto para activar tu cuenta e ingresar a tu Interfaz de Usuario.
     </p>
-    <!-- Botón simulador de confirmación rápida para pruebas -->
     <button class="btn-simular-link" onclick="confirmarYIrAInterfaz()">[Simular Clic en Enlace del Correo]</button>
   </div>
 
@@ -339,25 +333,6 @@
 
 <script>
   let currentEntityType = 'natural';
-
-  function switchMainTab(tab) {
-    const tabRegister = document.getElementById('tabRegister');
-    const tabLogin = document.getElementById('tabLogin');
-    const formRegister = document.getElementById('formRegister');
-    const formLogin = document.getElementById('formLogin');
-
-    if (tab === 'register') {
-      tabRegister.classList.add('active');
-      tabLogin.classList.remove('active');
-      formRegister.style.display = 'block';
-      formLogin.style.display = 'none';
-    } else {
-      tabLogin.classList.add('active');
-      tabRegister.classList.remove('active');
-      formRegister.style.display = 'none';
-      formLogin.style.display = 'block';
-    }
-  }
 
   function seleccionarTipo(tipo) {
     currentEntityType = tipo;
@@ -433,37 +408,6 @@
   function confirmarYIrAInterfaz() {
     window.location.href = 'interfaz-usuario.html';
   }
-
-  async function procesarAccesoDirecto(e) {
-    e.preventDefault();
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-
-    if (!email || !password) {
-      alert("Por favor ingrese su correo y contraseña.");
-      return;
-    }
-
-    const btnSubmit = document.getElementById('btnLoginSubmit');
-    btnSubmit.disabled = true;
-    btnSubmit.innerText = "Autenticando...";
-
-    try {
-      const userHash = await generateHash(`${email}_OMNIH_SALT_2026`);
-      sessionStorage.setItem('omnih_active_user', userHash);
-      sessionStorage.setItem('omnih_user_email', email);
-      sessionStorage.setItem('omnih_first_time', 'false');
-
-      setTimeout(() => {
-        window.location.href = 'interfaz-usuario.html';
-      }, 800);
-    } catch (error) {
-      console.error("Error al iniciar sesión:", error);
-      alert("Credenciales incorrectas.");
-      btnSubmit.disabled = false;
-      btnSubmit.innerText = "Ingresar a mi Interfaz";
-    }
-  }
 </script>
 </body>
-</html>
+          </html>
