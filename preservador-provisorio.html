@@ -22,14 +22,17 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
     body { background-color: var(--bg-light); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
 
-    /* HEADER SUPERIOR HUD CON ESLOGAN DORADO */
+    /* HEADER SUPERIOR: IDENTIDAD A LA IZQUIERDA / HAMBURGUESA Y CONFIG A LA DERECHA */
     header { background: #ffffff; border-bottom: 1px solid var(--border-color); padding: 12px 20px; position: sticky; top: 0; z-index: 20; }
     .header-content { display: flex; align-items: center; justify-content: space-between; max-width: 850px; margin: 0 auto; width: 100%; }
-    .header-left { display: flex; align-items: center; gap: 15px; }
+    
+    /* Arriba a la Izquierda: Elemento identitario OMNIH */
+    .header-left { display: flex; align-items: center; }
+    .brand-logo-img { height: 32px; width: auto; object-fit: contain; display: block; }
+    
+    /* Arriba a la Derecha: Configuración y Menú Hamburguesa */
+    .header-right { display: flex; align-items: center; gap: 15px; }
     .hamburger-btn { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-main); }
-    .brand-block { display: flex; flex-direction: column; }
-    .brand-title { font-size: 1.4rem; font-weight: 800; letter-spacing: 2px; color: var(--accent-gold); line-height: 1; }
-    .brand-slogan { font-size: 0.75rem; color: var(--accent-gold); font-weight: 600; margin-top: 4px; letter-spacing: 0.3px; }
     .config-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); }
 
     /* CONTENEDOR PRINCIPAL */
@@ -40,9 +43,14 @@
     .carousel-strip { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
     .carousel-thumb { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border-color); flex-shrink: 0; background: #e2e8f0; }
 
-    .user-info { display: flex; align-items: center; gap: 15px; }
+    .user-info { display: flex; align-items: flex-start; gap: 15px; }
+    
+    /* RECUADRO DE FOTO CON ETIQUETA "FOTO" EN LA PARTE SUPERIOR */
+    .user-photo-container { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+    .photo-label { font-size: 0.68rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
     .user-photo { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; border: 2px solid var(--accent-gold); background: #cbd5e1; }
-    .user-details { display: flex; flex-direction: column; gap: 8px; }
+    
+    .user-details { display: flex; flex-direction: column; gap: 8px; margin-top: 18px; }
     .user-name { font-weight: 700; font-size: 1.15rem; color: var(--text-main); }
     
     /* BLOQUE DE ETIQUETAS INTERACTIVAS Y SEPARADAS */
@@ -82,14 +90,14 @@
     .ai-guidance-floating { position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 810px; background: #f0f9ff; border: 1px solid #bae6fd; border-left: 4px solid var(--accent-blue); padding: 10px 16px; border-radius: 8px; font-size: 0.78rem; color: #0369a1; line-height: 1.4; box-shadow: 0 4px 12px rgba(0,0,0,0.08); z-index: 15; }
 
     /* MENÚ HAMBURGUESA DESPLEGABLE */
-    .drawer-panel { position: fixed; top: 0; left: -100%; width: 300px; height: 100vh; background: #ffffff; border-right: 1px solid var(--border-color); box-shadow: 4px 0 15px rgba(0,0,0,0.05); transition: left 0.3s ease; z-index: 30; padding: 20px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; }
-    .drawer-panel.active { left: 0; }
+    .drawer-panel { position: fixed; top: 0; right: -100%; width: 300px; height: 100vh; background: #ffffff; border-left: 1px solid var(--border-color); box-shadow: -4px 0 15px rgba(0,0,0,0.05); transition: right 0.3s ease; z-index: 30; padding: 20px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; }
+    .drawer-panel.active { right: 0; }
     .drawer-title { font-size: 1.2rem; font-weight: 800; color: var(--accent-gold); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
     .drawer-section-label { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-top: 10px; }
     .drawer-menu { list-style: none; display: flex; flex-direction: column; gap: 10px; }
     .drawer-menu li a { text-decoration: none; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; display: block; }
 
-    /* PIE DE PÁGINA CON LETRAS ROJAS MÍNIMAS Y SOBRIAS */
+    /* PIE DE PÁGINA CON TIPOGRAFÍA ROJA MÍNIMA Y SUBORDINADA */
     footer { padding: 16px 20px; background: #ffffff; border-top: 1px solid var(--border-color); text-align: center; }
     .hash-badge { font-family: ui-monospace, monospace; background: var(--panel-bg); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); max-width: 850px; margin: 0 auto; display: flex; flex-direction: column; gap: 2px; }
     .hash-title { font-size: 0.78rem; color: var(--text-muted); font-weight: 500; }
@@ -98,7 +106,7 @@
 </head>
 <body>
 
-  <!-- MENÚ HAMBURGUESA DESPLEGABLE -->
+  <!-- MENÚ HAMBURGUESA DESPLEGABLE (DESDE LA DERECHA) -->
   <div class="drawer-panel" id="drawer-menu">
     <div class="drawer-title">OMNIH</div>
     
@@ -112,17 +120,21 @@
     </ul>
   </div>
 
-  <!-- HEADER HUD CON ESLOGAN DORADO -->
+  <!-- HEADER CON ELEMENTO IDENTITARIO A LA IZQUIERDA Y HAMBURGUESA A LA DERECHA -->
   <header>
     <div class="header-content">
+      <!-- Arriba a la Izquierda: Elemento identitario OMNIH -->
       <div class="header-left">
-        <button class="hamburger-btn" onclick="toggleDrawer()">☰</button>
-        <div class="brand-block">
-          <div class="brand-title">OMNIH</div>
-          <div class="brand-slogan">"Desde el presente hacia el futuro, la historia de todos."</div>
-        </div>
+        <a href="index.html">
+          <img src="Screenshot_20260902-152157_1.jpg" alt="OMNIH" class="brand-logo-img">
+        </a>
       </div>
-      <button class="config-btn" title="Configuración">⚙</button>
+
+      <!-- Arriba a la Derecha: Configuración y Menú Hamburguesa -->
+      <div class="header-right">
+        <button class="config-btn" title="Configuración">⚙</button>
+        <button class="hamburger-btn" onclick="toggleDrawer()">☰</button>
+      </div>
     </div>
   </header>
 
@@ -135,9 +147,14 @@
         <div class="carousel-thumb"></div>
       </div>
       <div class="user-info">
-        <div class="user-photo"></div>
+        <!-- FOTO CON ETIQUETA "FOTO" EN LA PARTE SUPERIOR -->
+        <div class="user-photo-container">
+          <span class="photo-label">Foto</span>
+          <div class="user-photo"></div>
+        </div>
+
         <div class="user-details">
-          <div class="user-name">Protocolo - <span id="user-firstname">Asdrúbal</span></div>
+          <div class="user-name">Protocolo - <span id="user-firstname">Usuario</span></div>
           
           <div class="tags-container">
             <!-- 1. ETIQUETA DE RANGO (EVOLUCIONA AL CERTIFICAR LA ETAPA AUTOBIOGRÁFICA) -->
