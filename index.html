@@ -13,6 +13,7 @@
       --text-dark: #0f172a;
       --text-muted: #64748b;
       --accent-gold: #c5a059;
+      --accent-green: #10b981;
       --border-color: #e2e8f0;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
@@ -51,10 +52,13 @@
       font-weight: 700; 
       font-size: 0.75rem; 
       cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
     }
 
     .hud-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
     .hud-badge { background: #f1f5f9; border: 1px solid #e2e8f0; color: var(--text-muted); font-size: 0.65rem; font-weight: 700; padding: 0.25rem 0.5rem; border-radius: 12px; }
+    .status-ok { color: var(--accent-green); }
 
     .hemisphere-titles { display: flex; justify-content: space-between; font-size: 0.65rem; font-weight: 800; color: var(--text-muted); margin: 0.6rem 0 0.2rem; padding: 0 0.5rem; }
     
@@ -79,7 +83,7 @@
     .graticule { fill: none; stroke: #cbd5e1; stroke-width: 0.5px; stroke-dasharray: 2,2; }
     .sphere { fill: #f8fafc; stroke: #94a3b8; stroke-width: 1.2px; }
     
-    .country-active { fill: #10b981 !important; }
+    .country-active { fill: var(--accent-green) !important; }
 
     .compass-wrapper { 
       text-align: center; 
@@ -124,6 +128,7 @@
       padding: 0.3rem 0.8rem;
       transition: transform 0.15s ease, opacity 0.15s ease;
       user-select: none;
+      text-decoration: none;
       -webkit-tap-highlight-color: transparent;
     }
     .btn-text-gold:active {
@@ -137,16 +142,16 @@
   <div class="app-frame">
     <!-- BARRA SUPERIOR SOBRIA -->
     <div class="top-navbar">
-      <a href="index.html">
+      <a href="indice.html">
         <img src="Screenshot_20260902-152157_1.jpg" alt="OMNIH" class="brand-logo-img">
       </a>
-      <button class="btn-login-top" onclick="navegarA('vista-login')">Iniciar sesión</button>
+      <a href="login.html" class="btn-login-top">Iniciar sesión</a>
     </div>
 
-    <!-- METRICAS DE RED Y TIEMPO -->
+    <!-- METRICAS DE RED Y TIEMPO UTC EN VIVO -->
     <div class="hud-header">
-      <span class="hud-badge">RED: ÓPTIMA</span>
-      <span class="hud-badge">TIEMPO UTC: 10:24 AM</span>
+      <span class="hud-badge">RED: <span class="status-ok">ÓPTIMA</span></span>
+      <span class="hud-badge" id="utc-clock">TIEMPO UTC: --:--:-- UTC</span>
     </div>
 
     <div class="hemisphere-titles">
@@ -172,18 +177,18 @@
 
       <div class="manifesto">
         <strong>MANIFIESTO PROVISIONAL</strong><br>
-        OMNIH será un protocolo descentralizado para resguardar la memoria e historia de forma inmutable. Reseñamos los componentes Omnihistoricos del gran mosaico de la humanidad, con un Fondo de preservación de la data, autosostenible.
+        OMNIH es un protocolo que será descentralizado, para resguardo de la memoria digital y de interés Omnihistorico, de forma inmutable, conectando teselas (personas) georreferenciadas, garantizando todos sus procesos de preservación integral, de la data compilada, con un fondo Mutualizado de preservación y migración tecnológica.
       </div>
 
       <div class="metrics-grid">
         <div class="metric-unit">
           <span class="metric-lbl">Almacenamiento</span>
-          <span class="metric-val" id="val-storage">0.00 TB</span>
+          <span class="metric-val" id="val-storage">0.00 GB</span>
           <span class="metric-lbl">(Resguardados)</span>
         </div>
         <div class="metric-unit">
           <span class="metric-lbl">Inmutabilidad</span>
-          <span class="metric-val" id="val-inmutable">0.0%</span>
+          <span class="metric-val" id="val-inmutable">100%</span>
           <span class="metric-lbl">(SHA-256)</span>
         </div>
         <div class="metric-unit">
@@ -198,19 +203,27 @@
       <span style="font-size: 0.7rem; font-weight: 800; color: var(--text-muted); letter-spacing: 0.5px; display: block; margin-bottom: 0.2rem;">
         REGISTRARME
       </span>
-      <button class="btn-text-gold" onclick="navegarA('vista-registro')">
+      <a href="registro.html" class="btn-text-gold">
         Unirme al Protocolo
-      </button>
+      </a>
     </div>
   </div>
 
   <script>
     let paisesRegistrados = [];
 
-    function navegarA(vistaDestino) {
-      console.log("Navegando a:", vistaDestino);
+    // RELOJ UTC DINÁMICO EN VIVO
+    function actualizarRelojUTC() {
+      const ahora = new Date();
+      const horas = String(ahora.getUTCHours()).padStart(2, '0');
+      const minutos = String(ahora.getUTCMinutes()).padStart(2, '0');
+      const segundos = String(ahora.getUTCSeconds()).padStart(2, '0');
+      document.getElementById('utc-clock').textContent = `TIEMPO UTC: ${horas}:${minutos}:${segundos} UTC`;
     }
+    setInterval(actualizarRelojUTC, 1000);
+    actualizarRelojUTC();
 
+    // REGISTRO Y ACTUALIZACIÓN REAL DE MÉTRICAS
     function registrarPais(idIso, nombre) {
       if (!paisesRegistrados.some(p => p.id === idIso)) {
         paisesRegistrados.push({ id: idIso, nombre: nombre });
@@ -230,18 +243,19 @@
       
       if (count === 0) {
         listaElem.textContent = "Esperando señales de registro...";
-        document.getElementById('val-storage').textContent = "0.00 TB";
-        document.getElementById('val-inmutable').textContent = "0.0%";
+        document.getElementById('val-storage').textContent = "0.00 GB";
+        document.getElementById('val-inmutable').textContent = "100%";
         document.getElementById('val-interact').textContent = "0";
       } else {
         const nombres = paisesRegistrados.map(p => p.nombre).join(', ');
         listaElem.textContent = `Países Activos: ${nombres}`;
-        document.getElementById('val-storage').textContent = `${(count * 0.21).toFixed(2)} TB`;
-        document.getElementById('val-inmutable').textContent = `${Math.min(95.0 + (count * 0.8), 99.9).toFixed(1)}%`;
-        document.getElementById('val-interact').textContent = `${(count * 2.4).toFixed(1)}K`;
+        document.getElementById('val-storage').textContent = `${(count * 0.21).toFixed(2)} GB`;
+        document.getElementById('val-inmutable').textContent = "100%";
+        document.getElementById('val-interact').textContent = `${count}`;
       }
     }
 
+    // DIBUJO VECTORIAL DE LA ROSA DE LOS VIENTOS
     function dibujarRosa() {
       const canvas = document.getElementById('miRosa');
       if (!canvas) return;
@@ -321,6 +335,7 @@
 
     dibujarRosa();
 
+    // RENDERIZADO DE LOS GLOBOS D3.JS
     fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
       .then(res => res.json())
       .then(world => {
