@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OMNIH - Archivo Privado</title>
+  <style>
+    :root {
+      --bg-canvas: #edf2f7;
+      --card-bg: #ffffff;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --accent-gold: #c5a059;
+      --border-color: #e2e8f0;
+      --active-blue: #3182ce;
+      --tag-pending: #feebc8;
+      --tag-pending-text: #744210;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+
+    body {
+      background: var(--bg-canvas);
+      color: var(--text-dark);
+      display: flex;
+      justify-content: center;
+      padding: 1.5rem 1rem;
+    }
+
+    .container {
+      background-color: var(--card-bg);
+      width: 100%;
+      max-width: 680px;
+      border-radius: 24px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border-color);
+      padding: 1.5rem;
+    }
+
+    /* BARRA SUPERIOR REORGANIZADA */
+    .top-navbar {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 1rem;
+    }
+
+    /* ELEMENTO IDENTITARIO ARRIBA */
+    .brand-logo-img { 
+      height: 42px; 
+      width: auto; 
+      object-fit: contain; 
+      display: block;
+    }
+
+    /* BOTONES AMPLIOS Y ELEGANTES DEBAJO */
+    .nav-actions {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .btn-nav-large {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 16px;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      color: var(--text-dark);
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      transition: all 0.2s ease;
+    }
+
+    .btn-nav-large:hover {
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+      background: #fafaf9;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    /* ENCABEZADO EN LETRA NEGRA */
+    .protocol-subbar {
+      margin-bottom: 1.25rem;
+      border-bottom: 2px solid #000000;
+      padding-bottom: 0.5rem;
+    }
+
+    .header-protocol-text {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #000000;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .section-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    /* LISTADO GENERAL */
+    .file-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 1.5rem;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .file-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .file-item:hover {
+      border-color: var(--active-blue);
+      background: #f0f7ff;
+    }
+
+    .file-item.selected {
+      border-color: var(--accent-gold);
+      background: #fffdfa;
+      box-shadow: 0 0 0 2px rgba(197, 160, 89, 0.2);
+    }
+
+    .file-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .file-name {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    /* FORMATO DE ETIQUETAS DEL ARCHIVO */
+    .file-status-pill {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .pill-pending { background: var(--tag-pending); color: var(--tag-pending-text); }
+    .pill-certified { background: var(--accent-gold); color: #ffffff; }
+    .pill-active { background: #e2e8f0; color: #2d3748; }
+
+    /* PANEL DE CONTROL EN CERO */
+    .detail-panel {
+      background: #ffffff;
+      border: 1px dashed var(--border-color);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .empty-state-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .empty-state-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .detail-panel.active-selection {
+      border: 1px solid var(--accent-gold);
+      text-align: left;
+    }
+
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .detail-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .doc-meta {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+
+    .actions-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-action {
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .btn-view { background: #e2e8f0; color: var(--text-dark); }
+    .btn-deactivate { background: #fff5f5; color: #c53030; border-color: #feb2b2; }
+    .btn-certify { background: #fefcbf; color: #744210; border-color: #f6e05e; }
+    .btn-disabled { opacity: 0.5; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- BARRA SUPERIOR: IDENTIDAD ARRIBA, BOTONES AMPLIOS DEBAJO -->
+  <div class="top-navbar">
+    <img src="Screenshot_20260902-152157_1.jpg" alt="OMNIH" class="brand-logo-img">
+    <div class="nav-actions">
+      <a href="capsula-tiempo.html" class="btn-nav-large">Cápsula del tiempo</a>
+      <a href="interfaz-usuario.html" class="btn-nav-large">Interfaz de usuario</a>
+    </div>
+  </div>
+
+  <div class="protocol-subbar">
+    <span class="header-protocol-text">Protocolo - Archivo Privado</span>
+  </div>
+
+  <div class="section-label">Repositorio de Documentos</div>
+  <div class="file-list" id="fileList">
+    <!-- Renderizado dinámico de archivos -->
+  </div>
+
+  <div class="section-label">Ficha del Documento Seleccionado</div>
+  
+  <!-- ESTADO EN CERO (SIN SELECCIÓN) -->
+  <div class="detail-panel" id="detailPanel">
+    <div class="empty-state-title">Ningún archivo seleccionado</div>
+    <div class="empty-state-desc">Selecciona un elemento de la lista para gestionar sus parámetros de hibernación o certificación.</div>
+  </div>
+
+</div>
+
+<script>
+  let repositorioArchivos = [
+    {
+      id: "DOC-001",
+      titulo: "Documento_Registro_01.pdf",
+      tipo: "Documento de Texto",
+      fechaHibernacion: "2026-09-06",
+      fechaLiberacion: "2036-09-06",
+      beneficiario: "Beneficiario_01 (Código: TSL-001)",
+      estado: "por_programar",
+      certificado: false
+    },
+    {
+      id: "DOC-002",
+      titulo: "Acta_Certificada_02.pdf",
+      tipo: "Documento Inmutable",
+      fechaHibernacion: "2026-09-06",
+      fechaLiberacion: "2031-09-06",
+      beneficiario: "Beneficiario_02 (Código: TSL-002)",
+      estado: "por_programar",
+      certificado: true
+    },
+    {
+      id: "DOC-003",
+      titulo: "Archivo_General_03.docx",
+      tipo: "Documento Activo",
+      fechaHibernacion: "-",
+      fechaLiberacion: "-",
+      beneficiario: "Propietario",
+      estado: "activo",
+      certificado: false
+    }
+  ];
+
+  let archivoSeleccionadoIndex = -1;
+
+  function renderizarLista() {
+    const contenedorLista = document.getElementById('fileList');
+    contenedorLista.innerHTML = "";
+
+    repositorioArchivos.forEach((doc, idx) => {
+      const item = document.createElement('div');
+      item.className = `file-item ${idx === archivoSeleccionadoIndex ? 'selected' : ''}`;
+      item.onclick = () => seleccionarArchivo(idx);
+
+      let badgeText = "Activo";
+      let badgeClass = "pill-active";
+
+      if (doc.estado === "por_programar") {
+        if (doc.certificado) {
+          badgeText = "Certificado";
+          badgeClass = "pill-certified";
+        } else {
+          badgeText = "Por programar";
+          badgeClass = "pill-pending";
+        }
+      }
+
+      item.innerHTML = `
+        <div class="file-info">
+          <span style="font-size:1rem;">📄</span>
+          <span class="file-name">${doc.titulo}</span>
+        </div>
+        <span class="file-status-pill ${badgeClass}">${badgeText}</span>
+      `;
+
+      contenedorLista.appendChild(item);
+    });
+
+    renderizarDetalle();
+  }
+
+  function seleccionarArchivo(index) {
+    archivoSeleccionadoIndex = index;
+    renderizarLista();
+  }
+
+  function renderizarDetalle() {
+    const panel = document.getElementById('detailPanel');
+
+    if (archivoSeleccionadoIndex === -1) {
+      panel.className = "detail-panel";
+      panel.innerHTML = `
+        <div class="empty-state-title">Ningún archivo seleccionado</div>
+        <div class="empty-state-desc">Selecciona un elemento de la lista para gestionar sus parámetros de hibernación o certificación.</div>
+      `;
+      return;
+    }
+
+    panel.className = "detail-panel active-selection";
+    const doc = repositorioArchivos[archivoSeleccionadoIndex];
+
+    let estadoBadge = "";
+    let acciones = "";
+
+    if (doc.estado === "activo") {
+      estadoBadge = `<span class="file-status-pill pill-active">Documento Activo</span>`;
+      acciones = `
+        <button class="btn-action btn-view" onclick="alert('Abriendo vista de lectura/edición...')">👁️ Acceder</button>
+        <button class="btn-action btn-certify" onclick="enviarACapsula(${archivoSeleccionadoIndex})">⏳ Programar Hibernación</button>
+      `;
+    } else if (doc.certificado) {
+      estadoBadge = `<span class="file-status-pill pill-certified">Programación Certificada</span>`;
+      acciones = `
+        <button class="btn-action btn-view" onclick="alert('Vista previa en modo lectura')">👁️ Visualizar</button>
+        <button class="btn-action btn-disabled" disabled title="Documento certificado: Inmutable hasta la fecha de liberación">🔒 Bloqueado por Certificación</button>
+      `;
+    } else {
+      estadoBadge = `<span class="file-status-pill pill-pending">Por Programar (En Hibernación)</span>`;
+      acciones = `
+        <button class="btn-action btn-view" onclick="alert('Vista previa en modo lectura')">👁️ Visualizar</button>
+        <button class="btn-action btn-deactivate" onclick="desactivarHibernacion(${archivoSeleccionadoIndex})">⚡ Desactivar Hibernación</button>
+        <button class="btn-action btn-certify" onclick="certificar(${archivoSeleccionadoIndex})">📜 Certificar Programación</button>
+      `;
+    }
+
+    panel.innerHTML = `
+      <div class="detail-header">
+        <span class="detail-title">${doc.titulo}</span>
+        ${estadoBadge}
+      </div>
+      <div class="doc-meta">
+        <strong>Identificador:</strong> ${doc.id} | <strong>Tipo:</strong> ${doc.tipo}<br>
+        <strong>Beneficiario:</strong> ${doc.beneficiario}<br>
+        <strong>Inicio Hibernación:</strong> ${doc.fechaHibernacion} | <strong>Fecha Liberación:</strong> ${doc.fechaLiberacion}
+      </div>
+      <div class="actions-group">
+        ${acciones}
+      </div>
+    `;
+  }
+
+  function desactivarHibernacion(idx) {
+    if (confirm("¿Desactivar la hibernación para reincorporar el documento al uso activo de inmediato?")) {
+      repositorioArchivos[idx].estado = "activo";
+      repositorioArchivos[idx].fechaHibernacion = "-";
+      repositorioArchivos[idx].fechaLiberacion = "-";
+      renderizarLista();
+    }
+  }
+
+  function certificar(idx) {
+    if (confirm("ATENCIÓN: Certificar la programación sellará el archivo. No se podrá desactivar ni modificar hasta la fecha de liberación. ¿Deseas certificar?")) {
+      repositorioArchivos[idx].certificado = true;
+      renderizarLista();
+    }
+  }
+
+  function enviarACapsula(idx) {
+    const fecha = prompt("Ingresa la fecha de liberación (AAAA-MM-DD):", "2030-01-01");
+    if (fecha) {
+      repositorioArchivos[idx].estado = "por_programar";
+      repositorioArchivos[idx].fechaHibernacion = new Date().toISOString().split('T')[0];
+      repositorioArchivos[idx].fechaLiberacion = fecha;
+      renderizarLista();
+    }
+  }
+
+  renderizarLista();
+</script>
+
+</body>
+  </html>
