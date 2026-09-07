@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
   <title>OMNIH - Iniciar Sesión</title>
   <style>
     :root {
@@ -20,6 +20,7 @@
       margin: 0;
       padding: 0;
       font-family: system-ui, -apple-system, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
@@ -28,7 +29,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      min-height: 100dvh;
       padding: 1rem;
     }
 
@@ -57,6 +58,7 @@
       width: auto;
       object-fit: contain;
       display: block;
+      touch-action: manipulation;
     }
 
     /* SUB-LÍNEA: PROTOCOLO - INICIAR SESIÓN */
@@ -97,7 +99,8 @@
       color: var(--text-dark);
       outline: none;
       background: #ffffff;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      touch-action: manipulation;
     }
 
     .form-group input:focus {
@@ -115,12 +118,14 @@
       font-weight: 700;
       font-size: 1rem;
       cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.2s ease;
+      transition: transform 0.15s ease, box-shadow 0.2s ease, background-color 0.2s ease;
       margin-top: 10px;
       box-shadow: 0 4px 12px rgba(144, 205, 244, 0.35);
+      touch-action: manipulation;
+      user-select: none;
     }
 
-    .btn-submit:hover {
+    .btn-submit:hover, .btn-submit:active {
       background: linear-gradient(135deg, #bee3f8 0%, #ebf8ff 60%, #ffffff 100%);
       color: var(--active-blue);
       transform: translateY(-1px);
@@ -175,12 +180,12 @@
 
       <div class="form-group">
         <label for="loginEmail">Correo Electrónico</label>
-        <input type="email" id="loginEmail" placeholder="correo@ejemplo.com" required>
+        <input type="email" id="loginEmail" placeholder="correo@ejemplo.com" autocomplete="email" enterkeyhint="next" required>
       </div>
 
       <div class="form-group">
         <label for="loginPassword">Contraseña</label>
-        <input type="password" id="loginPassword" placeholder="••••••••" required>
+        <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" enterkeyhint="done" required>
       </div>
 
       <button type="submit" class="btn-submit" id="btnLoginSubmit">Iniciar Sesión</button>
@@ -234,6 +239,13 @@
       btnSubmit.innerText = "Iniciar Sesión";
     }
   }
+
+  /* Ajuste de pantalla al desplegar el teclado táctil */
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', () => {
+      document.body.style.minHeight = `${window.visualViewport.height}px`;
+    });
+  }
 </script>
 </body>
-  </html>
+</html>
