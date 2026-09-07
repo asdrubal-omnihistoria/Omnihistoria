@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
   <title>OMNIH - Archivo Privado</title>
   <style>
     :root {
@@ -17,13 +17,21 @@
       --tag-pending-text: #744210;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: system-ui, -apple-system, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
 
     body {
       background: var(--bg-canvas);
       color: var(--text-dark);
       display: flex;
       justify-content: center;
+      align-items: flex-start;
+      min-height: 100dvh;
       padding: 1.5rem 1rem;
     }
 
@@ -35,6 +43,7 @@
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
       border: 1px solid var(--border-color);
       padding: 1.5rem;
+      position: relative;
     }
 
     /* BARRA SUPERIOR REORGANIZADA */
@@ -52,6 +61,7 @@
       width: auto; 
       object-fit: contain; 
       display: block;
+      touch-action: manipulation;
     }
 
     /* BOTONES AMPLIOS Y ELEGANTES DEBAJO */
@@ -66,7 +76,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 10px 16px;
+      padding: 12px 16px;
       background: #ffffff;
       border: 1px solid var(--border-color);
       border-radius: 10px;
@@ -76,9 +86,11 @@
       text-decoration: none;
       box-shadow: 0 2px 4px rgba(0,0,0,0.02);
       transition: all 0.2s ease;
+      touch-action: manipulation;
+      user-select: none;
     }
 
-    .btn-nav-large:hover {
+    .btn-nav-large:hover, .btn-nav-large:active {
       border-color: var(--accent-gold);
       color: var(--accent-gold);
       background: #fafaf9;
@@ -115,23 +127,26 @@
       flex-direction: column;
       gap: 8px;
       margin-bottom: 1.5rem;
-      max-height: 220px;
+      max-height: 240px;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .file-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 14px;
+      padding: 12px 14px;
       background: #f8fafc;
       border: 1px solid var(--border-color);
       border-radius: 10px;
       cursor: pointer;
       transition: all 0.2s ease;
+      touch-action: manipulation;
+      user-select: none;
     }
 
-    .file-item:hover {
+    .file-item:hover, .file-item:active {
       border-color: var(--active-blue);
       background: #f0f7ff;
     }
@@ -158,7 +173,7 @@
     .file-status-pill {
       font-size: 0.7rem;
       font-weight: 700;
-      padding: 3px 8px;
+      padding: 4px 8px;
       border-radius: 4px;
       text-transform: uppercase;
       letter-spacing: 0.3px;
@@ -223,11 +238,13 @@
     .btn-action {
       font-size: 0.78rem;
       font-weight: 600;
-      padding: 8px 12px;
+      padding: 10px 14px;
       border-radius: 6px;
       cursor: pointer;
       border: 1px solid transparent;
       transition: all 0.2s;
+      touch-action: manipulation;
+      user-select: none;
     }
 
     .btn-view { background: #e2e8f0; color: var(--text-dark); }
@@ -244,8 +261,9 @@
   <div class="top-navbar">
     <img src="Screenshot_20260902-152157_1.jpg" alt="OMNIH" class="brand-logo-img">
     <div class="nav-actions">
-      <a href="capsula-tiempo.html" class="btn-nav-large">Cápsula del tiempo</a>
-      <a href="interfaz-usuario.html" class="btn-nav-large">Interfaz de usuario</a>
+      <!-- CONEXIÓN EXCLUSIVA CON CÁPSULA DEL TIEMPO -->
+      <a href="capsula-tiempo.html" class="btn-nav-large">⏳ Cápsula del Tiempo</a>
+      <a href="interfaz-usuario.html" class="btn-nav-large">👤 Interfaz de Usuario</a>
     </div>
   </div>
 
@@ -253,7 +271,7 @@
     <span class="header-protocol-text">Protocolo - Archivo Privado</span>
   </div>
 
-  <div class="section-label">Repositorio de Documentos</div>
+  <div class="section-label">Repositorio de Documentos Privados</div>
   <div class="file-list" id="fileList">
     <!-- Renderizado dinámico de archivos -->
   </div>
@@ -269,7 +287,8 @@
 </div>
 
 <script>
-  let repositorioArchivos = [
+  /* Carga y Persistencia Compartida con Cápsula del Tiempo */
+  let repositorioArchivos = JSON.parse(localStorage.getItem('omnih_private_repository')) || [
     {
       id: "DOC-001",
       titulo: "Documento_Registro_01.pdf",
@@ -303,6 +322,10 @@
   ];
 
   let archivoSeleccionadoIndex = -1;
+
+  function guardarCambios() {
+    localStorage.setItem('omnih_private_repository', JSON.stringify(repositorioArchivos));
+  }
 
   function renderizarLista() {
     const contenedorLista = document.getElementById('fileList');
@@ -366,21 +389,21 @@
     if (doc.estado === "activo") {
       estadoBadge = `<span class="file-status-pill pill-active">Documento Activo</span>`;
       acciones = `
-        <button class="btn-action btn-view" onclick="alert('Abriendo vista de lectura/edición...')">👁️ Acceder</button>
-        <button class="btn-action btn-certify" onclick="enviarACapsula(${archivoSeleccionadoIndex})">⏳ Programar Hibernación</button>
+        <button type="button" class="btn-action btn-view" onclick="alert('Abriendo vista de lectura/edición...')">👁️ Acceder</button>
+        <button type="button" class="btn-action btn-certify" onclick="enviarACapsula(${archivoSeleccionadoIndex})">⏳ Programar Hibernación</button>
       `;
     } else if (doc.certificado) {
       estadoBadge = `<span class="file-status-pill pill-certified">Programación Certificada</span>`;
       acciones = `
-        <button class="btn-action btn-view" onclick="alert('Vista previa en modo lectura')">👁️ Visualizar</button>
-        <button class="btn-action btn-disabled" disabled title="Documento certificado: Inmutable hasta la fecha de liberación">🔒 Bloqueado por Certificación</button>
+        <button type="button" class="btn-action btn-view" onclick="alert('Vista previa en modo lectura')">👁️ Visualizar</button>
+        <button type="button" class="btn-action btn-disabled" disabled title="Documento certificado: Inmutable hasta la fecha de liberación">🔒 Bloqueado por Certificación</button>
       `;
     } else {
       estadoBadge = `<span class="file-status-pill pill-pending">Por Programar (En Hibernación)</span>`;
       acciones = `
-        <button class="btn-action btn-view" onclick="alert('Vista previa en modo lectura')">👁️ Visualizar</button>
-        <button class="btn-action btn-deactivate" onclick="desactivarHibernacion(${archivoSeleccionadoIndex})">⚡ Desactivar Hibernación</button>
-        <button class="btn-action btn-certify" onclick="certificar(${archivoSeleccionadoIndex})">📜 Certificar Programación</button>
+        <button type="button" class="btn-action btn-view" onclick="alert('Vista previa en modo lectura')">👁️ Visualizar</button>
+        <button type="button" class="btn-action btn-deactivate" onclick="desactivarHibernacion(${archivoSeleccionadoIndex})">⚡ Desactivar Hibernación</button>
+        <button type="button" class="btn-action btn-certify" onclick="certificar(${archivoSeleccionadoIndex})">📜 Certificar Programación</button>
       `;
     }
 
@@ -405,6 +428,7 @@
       repositorioArchivos[idx].estado = "activo";
       repositorioArchivos[idx].fechaHibernacion = "-";
       repositorioArchivos[idx].fechaLiberacion = "-";
+      guardarCambios();
       renderizarLista();
     }
   }
@@ -412,6 +436,7 @@
   function certificar(idx) {
     if (confirm("ATENCIÓN: Certificar la programación sellará el archivo. No se podrá desactivar ni modificar hasta la fecha de liberación. ¿Deseas certificar?")) {
       repositorioArchivos[idx].certificado = true;
+      guardarCambios();
       renderizarLista();
     }
   }
@@ -422,12 +447,21 @@
       repositorioArchivos[idx].estado = "por_programar";
       repositorioArchivos[idx].fechaHibernacion = new Date().toISOString().split('T')[0];
       repositorioArchivos[idx].fechaLiberacion = fecha;
+      guardarCambios();
       renderizarLista();
     }
   }
 
+  /* Ajuste dinámico de viewport en pantalla táctil */
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', () => {
+      document.body.style.minHeight = `${window.visualViewport.height}px`;
+    });
+  }
+
+  /* Inicialización */
   renderizarLista();
 </script>
 
 </body>
-  </html>
+</html>
