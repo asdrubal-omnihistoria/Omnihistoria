@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>OMNIH | Preservación Inmutable</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
@@ -16,7 +16,14 @@
       --accent-green: #10b981;
       --border-color: #e2e8f0;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: system-ui, -apple-system, sans-serif; 
+      /* Optimización táctil global */
+      -webkit-tap-highlight-color: transparent;
+    }
     body { background: var(--bg-canvas); color: var(--text-dark); padding: 1rem; }
     
     .app-frame {
@@ -30,7 +37,7 @@
       overflow: hidden;
     }
 
-    /* BARRA SUPERIOR INTEGRADA: LOGO A LA IZQUIERDA, BOTÓN A LA DERECHA */
+    /* BARRA SUPERIOR INTEGRADA */
     .top-navbar {
       display: flex;
       justify-content: space-between;
@@ -42,6 +49,7 @@
       width: auto;
       object-fit: contain;
       display: block;
+      touch-action: manipulation;
     }
     .btn-login-top {
       background: #fff; 
@@ -54,13 +62,20 @@
       cursor: pointer;
       text-decoration: none;
       display: inline-block;
+      touch-action: manipulation;
+      user-select: none;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+    .btn-login-top:active {
+      transform: scale(0.96);
+      opacity: 0.85;
     }
 
     .hud-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
     .hud-badge { background: #f1f5f9; border: 1px solid #e2e8f0; color: var(--text-muted); font-size: 0.65rem; font-weight: 700; padding: 0.25rem 0.5rem; border-radius: 12px; }
     .status-ok { color: var(--accent-green); }
 
-    .hemisphere-titles { display: flex; justify-content: space-between; font-size: 0.65rem; font-weight: 800; color: var(--text-muted); margin: 0.6rem 0 0.2rem; padding: 0 0.5rem; }
+    .hemisphere-titles { display: flex; justify-content: space-between; font-size: 0.65rem; font-weight: 800; color: var(--text-muted); margin: 0.6rem 0 0.2rem; padding: 0 0.5rem; user-select: none; }
     
     .maps-container { 
       display: flex; 
@@ -70,6 +85,7 @@
       width: 100%;
       position: relative;
       z-index: 1;
+      touch-action: manipulation;
     }
     
     .map-globe {
@@ -77,11 +93,22 @@
       height: 240px;
       flex-shrink: 0;
       margin: 0;
+      touch-action: manipulation;
     }
 
-    .land { fill: #cbd5e1; stroke: #94a3b8; stroke-width: 0.4px; transition: fill 0.8s ease; }
-    .graticule { fill: none; stroke: #cbd5e1; stroke-width: 0.5px; stroke-dasharray: 2,2; }
-    .sphere { fill: #f8fafc; stroke: #94a3b8; stroke-width: 1.2px; }
+    .land { 
+      fill: #cbd5e1; 
+      stroke: #94a3b8; 
+      stroke-width: 0.4px; 
+      transition: fill 0.8s ease; 
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .land:hover, .land:active {
+      fill: #94a3b8;
+    }
+    .graticule { fill: none; stroke: #cbd5e1; stroke-width: 0.5px; stroke-dasharray: 2,2; pointer-events: none; }
+    .sphere { fill: #f8fafc; stroke: #94a3b8; stroke-width: 1.2px; pointer-events: none; }
     
     .country-active { fill: var(--accent-green) !important; }
 
@@ -91,6 +118,7 @@
       position: relative; 
       z-index: 2; 
       pointer-events: none;
+      user-select: none;
     }
 
     .info-card { border: 1px solid var(--border-color); border-radius: 16px; padding: 1.1rem; margin-top: 0.4rem; }
@@ -113,7 +141,18 @@
     .manifesto { font-size: 0.8rem; color: #334155; line-height: 1.45; margin-bottom: 0.8rem; }
     
     .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; text-align: center; }
-    .metric-unit { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; padding: 0.6rem 0.2rem; }
+    .metric-unit { 
+      background: #f8fafc; 
+      border: 1px solid var(--border-color); 
+      border-radius: 10px; 
+      padding: 0.6rem 0.2rem; 
+      touch-action: manipulation;
+      user-select: none;
+      transition: background-color 0.2s ease;
+    }
+    .metric-unit:active {
+      background: #f1f5f9;
+    }
     .metric-val { font-size: 0.9rem; font-weight: 900; display: block; transition: all 0.3s ease; }
     .metric-lbl { font-size: 0.62rem; color: var(--text-muted); display: block; }
 
@@ -129,7 +168,7 @@
       transition: transform 0.15s ease, opacity 0.15s ease;
       user-select: none;
       text-decoration: none;
-      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
     .btn-text-gold:active {
       transform: scale(0.95);
@@ -142,7 +181,7 @@
   <div class="app-frame">
     <!-- BARRA SUPERIOR SOBRIA -->
     <div class="top-navbar">
-      <a href="indice.html">
+      <a href="indice.html" style="touch-action: manipulation;">
         <img src="Screenshot_20260902-152157_1.jpg" alt="OMNIH" class="brand-logo-img">
       </a>
       <a href="login.html" class="btn-login-top">Iniciar sesión</a>
@@ -335,7 +374,7 @@
 
     dibujarRosa();
 
-    // RENDERIZADO DE LOS GLOBOS D3.JS
+    // RENDERIZADO DE LOS GLOBOS D3.JS CON SOPORTE TÁCTIL DIRECTO
     fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
       .then(res => res.json())
       .then(world => {
@@ -372,7 +411,13 @@
               return `land ${estaActivo ? 'country-active' : ''}`;
             })
             .attr("id", d => `country-${d.id}`)
-            .attr("d", path);
+            .attr("d", path)
+            // Eventos Táctiles e Interacción
+            .on("click touchend", function(event, d) {
+              if (event.type === 'touchend') event.preventDefault();
+              const nombrePais = d.properties ? d.properties.name : `ISO ${d.id}`;
+              registrarPais(d.id, nombrePais);
+            });
         }
 
         renderGlobe("#map-west", -85);
@@ -380,4 +425,4 @@
       });
   </script>
 </body>
-</html>
+            </html>
