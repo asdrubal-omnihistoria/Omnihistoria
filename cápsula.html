@@ -20,6 +20,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
@@ -52,6 +53,7 @@
       align-items: center;
       text-decoration: none !important;
       cursor: pointer;
+      touch-action: manipulation;
     }
 
     /* Tamaño fijo para prevenir desbordamientos */
@@ -83,6 +85,8 @@
       padding: 4px;
       border-radius: 6px;
       transition: background-color 0.2s;
+      touch-action: manipulation;
+      user-select: none;
     }
 
     .icon-btn:hover {
@@ -101,6 +105,8 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      touch-action: manipulation;
+      user-select: none;
     }
 
     .main-container {
@@ -110,6 +116,7 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
+      -webkit-overflow-scrolling: touch;
     }
 
     .section-card {
@@ -158,6 +165,7 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      touch-action: manipulation;
     }
 
     .screen-viewport {
@@ -211,6 +219,7 @@
       color: var(--text-main);
       outline: none;
       width: 100%;
+      touch-action: manipulation;
     }
 
     .param-input:focus {
@@ -246,6 +255,7 @@
       font-size: 0.95rem;
       outline: none;
       padding: 8px 0;
+      touch-action: manipulation;
     }
 
     #file-input {
@@ -264,6 +274,8 @@
       justify-content: center;
       cursor: pointer;
       flex-shrink: 0;
+      touch-action: manipulation;
+      user-select: none;
     }
 
     .cert-badge {
@@ -276,6 +288,7 @@
       color: var(--text-muted);
       font-family: monospace;
       font-weight: 600;
+      user-select: none;
     }
   </style>
 </head>
@@ -291,21 +304,21 @@
     </div>
 
     <div class="header-right">
-      <button class="icon-btn" title="Configuración" id="btn-config">
+      <button class="icon-btn" title="Configuración" id="btn-config" type="button">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="3"></circle>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
         </svg>
       </button>
 
-      <button class="icon-btn" title="Regresar" id="btn-back">
+      <button class="icon-btn" title="Regresar" id="btn-back" type="button">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
       </button>
 
-      <button class="btn-action-sm" id="btn-file-list">
+      <button class="btn-action-sm" id="btn-file-list" type="button">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
           <polyline points="14 2 14 8 20 8"></polyline>
@@ -340,19 +353,19 @@
       <div class="files-title" style="margin-bottom: 12px;">Parámetros de Depósito y Preservación</div>
       <div class="parameters-grid">
         <div class="param-group">
-          <label class="param-label">Fecha de Registro</label>
+          <label class="param-label" for="param-date">Fecha de Registro</label>
           <input type="date" class="param-input" id="param-date">
         </div>
         <div class="param-group">
-          <label class="param-label">Hora UTC</label>
+          <label class="param-label" for="param-time">Hora UTC</label>
           <input type="time" class="param-input" id="param-time">
         </div>
         <div class="param-group">
-          <label class="param-label">Hibernación (Meses)</label>
-          <input type="number" class="param-input" placeholder="Ej: 12, 24, 36..." id="param-hibernation">
+          <label class="param-label" for="param-hibernation">Hibernación (Meses)</label>
+          <input type="number" class="param-input" placeholder="Ej: 12, 24, 36..." id="param-hibernation" inputmode="numeric">
         </div>
         <div class="param-group">
-          <label class="param-label">Fecha de Liberación</label>
+          <label class="param-label" for="param-release">Fecha de Liberación</label>
           <input type="date" class="param-input" id="param-release">
         </div>
       </div>
@@ -370,7 +383,7 @@
         </svg>
       </label>
 
-      <input type="text" class="text-input" placeholder="Contextualizar el documento..." id="message-input" autocomplete="off">
+      <input type="text" class="text-input" placeholder="Contextualizar el documento..." id="message-input" autocomplete="off" inputmode="text" enterkeyhint="send">
 
       <button type="submit" class="btn-send" id="send-btn" title="Registrar">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -457,4 +470,4 @@
     }
   </script>
 </body>
-</html>
+        </html>
