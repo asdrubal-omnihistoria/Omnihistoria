@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
   <title>OMNIH - Registro</title>
   <style>
     :root {
@@ -20,6 +20,7 @@
       margin: 0;
       padding: 0;
       font-family: system-ui, -apple-system, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
@@ -28,7 +29,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      min-height: 100dvh;
       padding: 1rem;
     }
 
@@ -57,6 +58,7 @@
       width: auto;
       object-fit: contain;
       display: block;
+      touch-action: manipulation;
     }
 
     .btn-top-login {
@@ -70,9 +72,11 @@
       cursor: pointer;
       transition: all 0.2s ease;
       text-decoration: none;
+      touch-action: manipulation;
+      user-select: none;
     }
 
-    .btn-top-login:hover {
+    .btn-top-login:hover, .btn-top-login:active {
       border-color: var(--active-blue);
       color: var(--active-blue);
       background-color: #f8fafc;
@@ -113,6 +117,8 @@
       color: var(--text-muted);
       cursor: pointer;
       transition: all 0.2s ease;
+      touch-action: manipulation;
+      user-select: none;
     }
 
     .btn-entity.active {
@@ -142,7 +148,8 @@
       color: var(--text-dark);
       outline: none;
       background: #ffffff;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      touch-action: manipulation;
     }
 
     .form-group input:focus {
@@ -166,12 +173,14 @@
       font-weight: 700;
       font-size: 1rem;
       cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.2s ease;
+      transition: transform 0.15s ease, box-shadow 0.2s ease, background-color 0.2s ease;
       margin-top: 10px;
       box-shadow: 0 4px 12px rgba(144, 205, 244, 0.35);
+      touch-action: manipulation;
+      user-select: none;
     }
 
-    .btn-submit:hover {
+    .btn-submit:hover, .btn-submit:active {
       background: linear-gradient(135deg, #bee3f8 0%, #ebf8ff 60%, #ffffff 100%);
       color: var(--active-blue);
       transform: translateY(-1px);
@@ -254,6 +263,8 @@
       cursor: pointer;
       text-decoration: none;
       box-shadow: 0 4px 10px rgba(49, 130, 206, 0.3);
+      touch-action: manipulation;
+      user-select: none;
     }
   </style>
 </head>
@@ -287,32 +298,32 @@
 
       <div class="form-group">
         <label id="lblNombre" for="regNombre">Nombre Completo del Titular</label>
-        <input type="text" id="regNombre" placeholder="Nombre y Apellido" required>
+        <input type="text" id="regNombre" placeholder="Nombre y Apellido" autocomplete="name" enterkeyhint="next" required>
       </div>
 
       <div class="form-group" id="groupCargo" style="display: none;">
         <label for="regCargo">Cargo o Representación</label>
-        <input type="text" id="regCargo" placeholder="Ej. Director, Apoderado">
+        <input type="text" id="regCargo" placeholder="Ej. Director, Apoderado" enterkeyhint="next">
       </div>
 
       <div class="form-group">
         <label for="regEmail">Correo Electrónico</label>
-        <input type="email" id="regEmail" placeholder="correo@ejemplo.com" required>
+        <input type="email" id="regEmail" placeholder="correo@ejemplo.com" autocomplete="email" enterkeyhint="next" required>
       </div>
 
       <div class="form-group">
         <label for="regPassword">Contraseña</label>
-        <input type="password" id="regPassword" placeholder="••••••••" required minlength="8">
+        <input type="password" id="regPassword" placeholder="••••••••" autocomplete="new-password" enterkeyhint="done" required minlength="8">
         <div class="pwd-hint">Mínimo 8 caracteres (debe incluir letras y números).</div>
       </div>
 
       <button type="submit" class="btn-submit" id="btnRegisterSubmit">Registrarme</button>
     </form>
 
-    <!-- Frase Institucional -->
+    <!-- Frase Institucional Dinámica -->
     <div class="quote-box">
-      <p class="quote-text">"Al registrarte te sumas al compromiso de hacer todo lo que este en nuestras posibilidades, para que tú nombre, el de tu familia y toda nuestra comunidad, sean parte de la historia del futuro."</p>
-      <span class="quote-source">Fuente: Comunidad de la Omnihistoria. omnihistoria.io</span>
+      <p class="quote-text" id="displayQuoteText">"Al registrarte te sumas al compromiso de hacer todo lo que este en nuestras posibilidades, para que tú nombre, el de tu familia y toda nuestra comunidad, sean parte de la historia del futuro."</p>
+      <span class="quote-source" id="displayQuoteSource">Fuente: Comunidad de la Omnihistoria. omnihistoria.io</span>
     </div>
 
   </div>
@@ -326,13 +337,39 @@
       <br><br>
       Por favor revisa tu bandeja de entrada y haz clic en el enlace adjunto para activar tu cuenta e ingresar a tu Interfaz de Usuario.
     </p>
-    <button class="btn-simular-link" onclick="confirmarYIrAInterfaz()">[Simular Clic en Enlace del Correo]</button>
+    <button type="button" class="btn-simular-link" onclick="confirmarYIrAInterfaz()">[Simular Clic en Enlace del Correo]</button>
   </div>
 
 </div>
 
 <script>
   let currentEntityType = 'natural';
+
+  /* Lógica de Repositorio de Mensajes Programable */
+  function cargarMensajeInstitucional() {
+    const defaultQuote = "Al registrarte te sumas al compromiso de hacer todo lo que este en nuestras posibilidades, para que tú nombre, el de tu familia y toda nuestra comunidad, sean parte de la historia del futuro.";
+    const defaultSource = "Fuente: Comunidad de la Omnihistoria. omnihistoria.io";
+
+    try {
+      const repository = JSON.parse(localStorage.getItem('omnih_quotes_repository')) || [];
+      const activeQuote = JSON.parse(localStorage.getItem('omnih_active_quote'));
+
+      if (activeQuote && activeQuote.text) {
+        document.getElementById('displayQuoteText').innerText = `"${activeQuote.text}"`;
+        document.getElementById('displayQuoteSource').innerText = activeQuote.source || defaultSource;
+      } else if (repository.length > 0) {
+        const randomIndex = Math.floor(Math.random() * repository.length);
+        const selected = repository[randomIndex];
+        document.getElementById('displayQuoteText').innerText = `"${selected.text}"`;
+        document.getElementById('displayQuoteSource').innerText = selected.source || defaultSource;
+      } else {
+        document.getElementById('displayQuoteText').innerText = `"${defaultQuote}"`;
+        document.getElementById('displayQuoteSource').innerText = defaultSource;
+      }
+    } catch (e) {
+      console.warn("Usando mensaje predeterminado de respaldo.");
+    }
+  }
 
   function seleccionarTipo(tipo) {
     currentEntityType = tipo;
@@ -408,6 +445,16 @@
   function confirmarYIrAInterfaz() {
     window.location.href = 'interfaz-usuario.html';
   }
+
+  /* Inicialización */
+  document.addEventListener('DOMContentLoaded', cargarMensajeInstitucional);
+
+  /* Adaptación al desplegar el teclado táctil */
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', () => {
+      document.body.style.minHeight = `${window.visualViewport.height}px`;
+    });
+  }
 </script>
 </body>
-          </html>
+</html>
