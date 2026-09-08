@@ -1,35 +1,31 @@
 import { JWT } from 'google-auth-library';
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 
-// Mapeo dinámico de las 5 métricas de OMNIH con sus respectiva ID de Google Sheet
 const SHEET_IDS = {
-  RECORD_CREATED: process.env.SHEET_ID_METRICA_1,        // Métrica 1: Almacenamiento / Teselas
-  SYSTEM_PERFORMANCE: process.env.SHEET_ID_METRICA_2,    // Métrica 2: Reserva y Crecimiento
-  RECORD_CONSOLIDATED: process.env.SHEET_ID_METRICA_3,   // Métrica 3: Inmutabilidad / Hashes
-  COMMUNITY_INTERACTION: process.env.SHEET_ID_METRICA_4, // Métrica 4: Consultas / Carrusel
-  DONATION_CONTRIBUTION: process.env.SHEET_ID_METRICA_5  // Métrica 5: Fondo Mutual
+  RECORD_CREATED: process.env.SHEET_ID_METRICA_1,        // Métrica 1
+  SYSTEM_PERFORMANCE: process.env.SHEET_ID_METRICA_2,    // Métrica 2
+  RECORD_CONSOLIDATED: process.env.SHEET_ID_METRICA_3,   // Métrica 3
+  COMMUNITY_INTERACTION: process.env.SHEET_ID_METRICA_4, // Métrica 4
+  DONATION_CONTRIBUTION: process.env.SHEET_ID_METRICA_5  // Métrica 5
 };
 
 export default async function handler(req, res) {
-  // Solo se admiten peticiones HTTP POST
   if (req.method !== 'POST') {
-    return res.status(455).json({ error: 'Método no permitido. Utilizar POST.' });
+    return res.status(405).json({ error: 'Método no permitido. Utilizar POST.' });
   }
 
   try {
     const payload = req.body;
     const { event_category, event_data, timestamp_utc, anonymized_node_hash } = payload;
 
-    // Validación de categoría de evento
     const sheetId = SHEET_IDS[event_category];
     if (!sheetId) {
       return res.status(400).json({ error: 'Categoría de evento no reconocida o desconfigurada.' });
     }
 
-    // Autenticación segura con la API de Google mediante Variables de Entorno
     const serviceAccountAuth = new JWT({
       email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-      key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      key: (process.env.GOOGLE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
       scopes: ['https://www.googleapis.com/auth/spreadsheets'],
     });
 
@@ -37,28 +33,34 @@ export default async function handler(req, res) {
     await doc.loadInfo();
     const sheet = doc.sheetsByIndex[0];
 
-    // Procesamiento y adición de filas según la métrica correspondiente
+    // Obtenemos el número real de filas con datos para construir las fórmulas
+    const rows = await sheet.getRows();
+    const nextRow = rows.length + 2; // +1 por el encabezado, +1 por la nueva fila
+
     if (event_category === 'RECORD_CREATED') {
       const bytes = event_data.data_volume_bytes || 0;
       await sheet.addRow({
-        'Timestamp UTC': timestamp_utc,
-        'Node Hash': anonymized_node_hash,
-        'Bytes': bytes,
-        'MB': `=C${sheet.rowCount + 1}/1048576`,
-        'GB': `=D${sheet.rowCount + 1}/1024`
+        'Teselas Registradas': 1,
+        'Uso Real Promedio %': 0.35,
+        'Espacio Reservado (Bits)': bytes * 8,
+        'Espacio Reservado (Bytes)': bytes,
+        'Espacio Reservado (MB)': `=D${nextRow}/1048576`,
+        'Espacio Reservado (GB)': `=E${nextRow}/1024`,
+        'Fotos Totales Potenciales': 100,
+        'Folios Totales Potenciales': 200,
+        'Espacio Real Consumido (GB)': `=F${nextRow}*B${nextRow}`
       });
     } else if (event_category === 'DONATION_CONTRIBUTION') {
       const monto = event_data.contribution_amount || 0;
       await sheet.addRow({
         'Donaciones Totales': monto,
         'Costo Operativo': 50,
-        'Fondo Mutual Acumulado': `=A${sheet.rowCount + 1}-B${sheet.rowCount + 1}`,
-        'Meses de Preservacion': `=C${sheet.rowCount + 1}/B${sheet.rowCount + 1}`,
-        'Fondo Migracion Tecnologica': `=C${sheet.rowCount + 1}*0.30`,
-        'Estado de Solvencia': `=IF(D${sheet.rowCount + 1}>=12, "Optimo", "Alerta")`
+        'Fondo Mutual Acumulado': `=A${nextRow}-B${nextRow}`,
+        'Meses de Preservacion': `=C${nextRow}/B${nextRow}`,
+        'Fondo Migracion Tecnologica (Reserva Cuantica)': `=C${nextRow}*0.30`,
+        'Estado de Solvencia': `=IF(D${nextRow}>=12, "Optimo", "Alerta")`
       });
     } else {
-      // Registro estándar para el resto de eventos
       await sheet.addRow({
         'Timestamp UTC': timestamp_utc,
         'Node Hash': anonymized_node_hash,
