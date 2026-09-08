@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OMNIHEventPayload",
+  "description": "Esquema unificado de telemetría y control de acceso para OMNIH",
+  "type": "object",
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Identificador único UUID v4 generado por el cliente"
+    },
+    "timestamp_utc": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Fecha y hora exacta UTC del evento"
+    },
+    "anonymized_node_hash": {
+      "type": "string",
+      "pattern": "^[a-fA-F0-9]{64}$",
+      "description": "Hash SHA-256 anónimo del nodo/usuario"
+    },
+    "geo_aggregation": {
+      "type": "object",
+      "properties": {
+        "country_code": { "type": "string", "minLength": 2, "maxLength": 2 },
+        "region_id": { "type": "string" }
+      },
+      "required": ["country_code"]
+    },
+    "event_category": {
+      "type": "string",
+      "enum": [
+        "RECORD_CREATED",
+        "SYSTEM_PERFORMANCE",
+        "RECORD_CONSOLIDATED",
+        "COMMUNITY_INTERACTION",
+        "DONATION_CONTRIBUTION"
+      ],
+      "description": "Métrica a la cual pertenece el evento (Métricas 1 a 5)"
+    },
+    "event_data": {
+      "type": "object",
+      "properties": {
+        "data_volume_bytes": { "type": "integer", "minimum": 0 },
+        "allocated_capacity_bytes": { "type": "integer", "minimum": 0 },
+        "is_consolidated": { "type": "boolean" },
+        "pwa_performance_ms": { "type": "integer", "minimum": 0 },
+        "contribution_currency": { "type": "string" },
+        "contribution_amount": { "type": "number", "minimum": 0 }
+      }
+    },
+    "visibility_scope": {
+      "type": "string",
+      "enum": ["PUBLIC_AGGREGATED", "PRIVATE_DAO_ONLY"],
+      "description": "Nivel de visibilidad del dato registrado"
+    }
+  },
+  "required": [
+    "event_id",
+    "timestamp_utc",
+    "anonymized_node_hash",
+    "geo_aggregation",
+    "event_category",
+    "event_data",
+    "visibility_scope"
+  ]
+        }
