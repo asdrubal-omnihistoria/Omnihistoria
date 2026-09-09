@@ -1,0 +1,18 @@
+{
+  "licencia_institucional": {
+    "licencia_id": "LIC-INST-2026-UCLA-001",
+    "nombre_institucion": "Universidad Centroccidental Lisandro Alvarado",
+    "hash_licencia": "c4ca4238a0b923820dcc509a6f75849b2815d4a9401886897914022c47012e8b",
+    "estado_actual": "REVOCADA",
+    "historial_vigencia": {
+      "fecha_activacion_utc": "2026-08-01T00:00:00Z",
+      "fecha_revocacion_utc": "2027-01-15T14:30:00Z",
+      "motivo_revocacion": "FINALIZACION_DE_CONVENIO_O_SOLICITUD_INSTITUCIONAL"
+    },
+    "regla_custodia": {
+      "documentos_emitidos_total": 450,
+      "estado_certificaciones_previas": "CONSERVAR_VALIDEZ_PERPETUA",
+      "nuevas_emisiones_permitidas": false
+    }
+  }
+}
