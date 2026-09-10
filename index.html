@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
- <!DOCTYPE html>
-<html lang="es">
-<head>
   <script>
     (function() {
-      var claveCorrecta = "Carmen1234/;
+      var claveCorrecta = "Carmen1234/";
       if (sessionStorage.getItem("acceso_autorizado") !== "true") {
         var intento = prompt("Ingrese la contraseña de acceso:");
         if (intento === claveCorrecta) {
@@ -19,7 +16,7 @@
       }
     })();
   </script>
-  <meta charset="UTF-8"> <meta charset="UTF-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>OMNIH | Preservación Inmutable</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -39,7 +36,6 @@
       margin: 0; 
       padding: 0; 
       font-family: system-ui, -apple-system, sans-serif; 
-      /* Optimización táctil global */
       -webkit-tap-highlight-color: transparent;
     }
     body { background: var(--bg-canvas); color: var(--text-dark); padding: 1rem; }
@@ -55,7 +51,6 @@
       overflow: hidden;
     }
 
-    /* BARRA SUPERIOR INTEGRADA */
     .top-navbar {
       display: flex;
       justify-content: space-between;
@@ -197,7 +192,6 @@
 <body>
 
   <div class="app-frame">
-    <!-- BARRA SUPERIOR SOBRIA -->
     <div class="top-navbar">
       <a href="indice.html" style="touch-action: manipulation;">
         <img src="Screenshot_20260902-152157_1.jpg" alt="OMNIH" class="brand-logo-img">
@@ -205,7 +199,6 @@
       <a href="login.html" class="btn-login-top">Iniciar sesión</a>
     </div>
 
-    <!-- METRICAS DE RED Y TIEMPO UTC EN VIVO -->
     <div class="hud-header">
       <span class="hud-badge">RED: <span class="status-ok">ÓPTIMA</span></span>
       <span class="hud-badge" id="utc-clock">TIEMPO UTC: --:--:-- UTC</span>
@@ -269,7 +262,6 @@
   <script>
     let paisesRegistrados = [];
 
-    // RELOJ UTC DINÁMICO EN VIVO
     function actualizarRelojUTC() {
       const ahora = new Date();
       const horas = String(ahora.getUTCHours()).padStart(2, '0');
@@ -280,7 +272,6 @@
     setInterval(actualizarRelojUTC, 1000);
     actualizarRelojUTC();
 
-    // REGISTRO Y ACTUALIZACIÓN REAL DE MÉTRICAS
     function registrarPais(idIso, nombre) {
       if (!paisesRegistrados.some(p => p.id === idIso)) {
         paisesRegistrados.push({ id: idIso, nombre: nombre });
@@ -312,7 +303,6 @@
       }
     }
 
-    // DIBUJO VECTORIAL DE LA ROSA DE LOS VIENTOS
     function dibujarRosa() {
       const canvas = document.getElementById('miRosa');
       if (!canvas) return;
@@ -392,7 +382,6 @@
 
     dibujarRosa();
 
-    // RENDERIZADO DE LOS GLOBOS D3.JS CON SOPORTE TÁCTIL DIRECTO
     fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
       .then(res => res.json())
       .then(world => {
@@ -430,7 +419,6 @@
             })
             .attr("id", d => `country-${d.id}`)
             .attr("d", path)
-            // Eventos Táctiles e Interacción
             .on("click touchend", function(event, d) {
               if (event.type === 'touchend') event.preventDefault();
               const nombrePais = d.properties ? d.properties.name : `ISO ${d.id}`;
@@ -443,4 +431,4 @@
       });
   </script>
 </body>
-            </html>
+       </html>
