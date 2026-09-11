@@ -613,4 +613,108 @@
           svgWest.selectAll("path.land").attr("d", pathWest);
           svgWest.select("path.graticule").attr("d", pathWest);
 
-          svgEast.selectAll("p
+          svgEast.selectAll("path.land").attr("d", pathEast);
+          svgEast.select("path.graticule").attr("d", pathEast);
+
+          requestAnimationFrame(animate);
+        }
+
+        animate();
+
+      }).catch(err => {
+        console.error("No se pudo descargar la geometría externa:", err);
+      });
+
+    // Lógica para consultar el backend Serverless con Google Gemini
+    async function consultarIA() {
+      const promptInput = document.getElementById('ai-prompt');
+      const responseBox = document.getElementById('ai-response');
+      const userText = promptInput.value.trim();
+
+      if (!userText) return;
+
+      responseBox.textContent = "Procesando consulta con la red...";
+      promptInput.value = "";
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: userText })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          responseBox.textContent = data.reply || "Consulta recibida correctamente.";
+        } else {
+          responseBox.textContent = "Respuesta del Orientador: El módulo IA está listo. (Configura GEMINI_API_KEY en Vercel para respuestas dinámicas).";
+        }
+      } catch (err) {
+        responseBox.textContent = "Respuesta del Orientador: El módulo IA está listo. (Configura GEMINI_API_KEY en Vercel para respuestas dinámicas).";
+      }
+    }
+
+    // Funciones del Blog Dinámico
+    let publicaciones = [
+      {
+        id: 1,
+        titulo: "Inicio del Protocolo OMNIH",
+        texto: "Se establece la primera tesela fundacional de preservación inmutable.",
+        imagen: ""
+      }
+    ];
+
+    function toggleBlogForm() {
+      const form = document.getElementById('blog-form');
+      form.style.display = form.style.display === 'none' ? 'flex' : 'none';
+    }
+
+    function renderBlog() {
+      const feed = document.getElementById('blog-feed');
+      feed.innerHTML = "";
+      publicaciones.forEach(post => {
+        const postDiv = document.createElement('div');
+        postDiv.className = 'blog-post';
+        postDiv.innerHTML = `
+          <button class="btn-delete-post" onclick="eliminarPublicacion(${post.id})">Quitar</button>
+          <div style="font-weight:800; font-size:0.8rem; color:var(--text-dark); margin-bottom:0.2rem;">${post.titulo}</div>
+          <div style="font-size:0.75rem; color:#475569; line-height:1.35;">${post.texto}</div>
+          ${post.imagen ? `<img src="${post.imagen}" class="blog-post-img" alt="Imagen post">` : ''}
+        `;
+        feed.appendChild(postDiv);
+      });
+    }
+
+    function agregarPublicacion() {
+      const titulo = document.getElementById('post-title').value.trim();
+      const texto = document.getElementById('post-text').value.trim();
+      const imagen = document.getElementById('post-img').value.trim();
+
+      if (!titulo || !texto) {
+        alert("Por favor completa el título y el contenido.");
+        return;
+      }
+
+      publicaciones.unshift({
+        id: Date.now(),
+        titulo: titulo,
+        texto: texto,
+        imagen: imagen
+      });
+
+      document.getElementById('post-title').value = "";
+      document.getElementById('post-text').value = "";
+      document.getElementById('post-img').value = "";
+      toggleBlogForm();
+      renderBlog();
+    }
+
+    function eliminarPublicacion(id) {
+      publicaciones = publicaciones.filter(p => p.id !== id);
+      renderBlog();
+    }
+
+    renderBlog();
+  </script>
+</body>
+</html>
