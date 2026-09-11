@@ -99,6 +99,7 @@
       position: relative;
       z-index: 1;
       touch-action: manipulation;
+      min-height: 240px;
     }
     
     .map-globe {
@@ -113,7 +114,6 @@
       fill: #cbd5e1; 
       stroke: #94a3b8; 
       stroke-width: 0.4px; 
-      transition: fill 0.8s ease; 
       cursor: pointer;
       touch-action: manipulation;
     }
@@ -371,7 +371,7 @@
       </div>
     </div>
 
-    <!-- Módulo Orientador Guía con Gemini -->
+    <!-- Módulo Orientador IA Gemini -->
     <div class="ai-orienter-card">
       <div class="ai-header">
         <span>🤖</span> ORIENTADOR DE IA OMNIH
@@ -535,81 +535,82 @@
 
     dibujarRosa();
 
-    // Renderizado de mapas con rotación de 3 segundos
+    // DIBUJO ESTRUCTURAL ESTÁTICO DE EMERGENCIA (Garantiza jamás ver el espacio vacío)
+    function crearGloboBase(containerId) {
+      const container = d3.select(containerId);
+      container.html("");
+      const svg = container.append("svg")
+        .attr("viewBox", "0 0 240 240")
+        .attr("width", "100%")
+        .attr("height", "100%");
+
+      svg.append("circle")
+        .attr("cx", 120).attr("cy", 120).attr("r", 118)
+        .attr("class", "sphere");
+      
+      return svg;
+    }
+
+    crearGloboBase("#map-west");
+    crearGloboBase("#map-east");
+
+    // DIBUJO VECTORIAL COMPLETO Y ACTIVACIÓN DE ROTACIÓN
     fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
       .then(res => res.json())
       .then(world => {
         const countries = topojson.feature(world, world.objects.countries);
+        
+        const width = 240, height = 240, radius = 118;
+        
+        const projWest = d3.geoOrthographic().scale(radius).translate([width / 2, height / 2]);
+        const projEast = d3.geoOrthographic().scale(radius).translate([width / 2, height / 2]);
 
-        function renderGlobe(containerId, centerLon) {
-          const width = 240, height = 240;
-          const radius = 118;
-          
-          const projection = d3.geoOrthographic()
-            .scale(radius)
-            .translate([width / 2, height / 2])
-            .rotate([-centerLon, 0, 0]);
+        const pathWest = d3.geoPath().projection(projWest);
+        const pathEast = d3.geoPath().projection(projEast);
 
-          const path = d3.geoPath().projection(projection);
+        let rotWest = 85;
+        let rotEast = -30;
+
+        projWest.rotate([-rotWest, 0, 0]);
+        projEast.rotate([-rotEast, 0, 0]);
+
+        function renderCapas(containerId, pathObj) {
+          d3.select(containerId).html("");
           const svg = d3.select(containerId).append("svg")
             .attr("viewBox", `0 0 ${width} ${height}`)
-            .attr("width", "100%")
-            .attr("height", "100%");
+            .attr("width", "100%").attr("height", "100%");
 
-          svg.append("circle")
-            .attr("cx", width/2).attr("cy", height/2).attr("r", radius)
-            .attr("class", "sphere");
+          svg.append("circle").attr("cx", width/2).attr("cy", height/2).attr("r", radius).attr("class", "sphere");
+          svg.append("path").datum(d3.geoGraticule()()).attr("class", "graticule").attr("d", pathObj);
 
-          const graticulePath = svg.append("path")
-            .datum(d3.geoGraticule()())
-            .attr("class", "graticule")
-            .attr("d", path);
-
-          const landPaths = svg.selectAll("path.land")
+          svg.selectAll("path.land")
             .data(countries.features)
             .enter().append("path")
-            .attr("class", d => {
-              const estaActivo = paisesRegistrados.some(p => p.id === d.id);
-              return `land ${estaActivo ? 'country-active' : ''}`;
-            })
+            .attr("class", d => `land ${paisesRegistrados.some(p => p.id === d.id) ? 'country-active' : ''}`)
             .attr("id", d => `country-${d.id}`)
-            .attr("d", path)
+            .attr("d", pathObj)
             .on("click touchend", function(event, d) {
               if (event.type === 'touchend') event.preventDefault();
               const nombrePais = d.properties ? d.properties.name : `ISO ${d.id}`;
               registrarPais(d.id, nombrePais);
             });
 
-          // Animación de rotación continua por 3 segundos (360 grados adicionales)
-          const startTime = Date.now();
-          const duration = 3000;
-          const initialLon = centerLon;
-
-          d3.timer(() => {
-            const elapsed = Date.now() - startTime;
-            if (elapsed >= duration) {
-              projection.rotate([-initialLon, 0, 0]);
-              graticulePath.attr("d", path);
-              landPaths.attr("d", path);
-              return true;
-            }
-            const currentLon = initialLon + (elapsed / duration) * 360;
-            projection.rotate([-currentLon, 0, 0]);
-            graticulePath.attr("d", path);
-            landPaths.attr("d", path);
-          });
+          return svg;
         }
 
-        renderGlobe("#map-west", -85);
-        renderGlobe("#map-east", 30);
-      });
+        // Renderizado inicial garantizado
+        const svgWest = renderCapas("#map-west", pathWest);
+        const svgEast = renderCapas("#map-east", pathEast);
 
-    // Lógica para consultar el backend Serverless con Google Gemini
-    async function consultarIA() {
-      const promptInput = document.getElementById('ai-prompt');
-      const responseBox = document.getElementById('ai-response');
-      const userText = promptInput.value.trim();
+        // Activación de rotación desacoplada
+        function animate() {
+          rotWest += 0.2;
+          rotEast += 0.2;
 
-      if (!userText) return;
+          projWest.rotate([-rotWest, 0, 0]);
+          projEast.rotate([-rotEast, 0, 0]);
 
-      responseBox.textContent = "Procesando consulta con la
+          svgWest.selectAll("path.land").attr("d", pathWest);
+          svgWest.select("path.graticule").attr("d", pathWest);
+
+          svgEast.selectAll("p
