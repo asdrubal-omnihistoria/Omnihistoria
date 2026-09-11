@@ -220,7 +220,7 @@
       cursor: pointer;
     }
 
-    /* Módulo Blog Dinámico */
+    /* Módulo Novedades & Divulgación (Solo Lectura Oficial) */
     .blog-section {
       margin-top: 1.2rem;
       border-top: 1px dashed var(--border-color);
@@ -230,46 +230,20 @@
       font-size: 0.9rem;
       font-weight: 800;
       color: var(--text-dark);
-      margin-bottom: 0.6rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .blog-controls {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      background: #f8fafc;
-      padding: 0.75rem;
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
-      margin-bottom: 1rem;
-    }
-    .blog-input, .blog-textarea {
-      width: 100%;
-      padding: 0.4rem 0.6rem;
-      font-size: 0.75rem;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-    }
-    .btn-blog-add {
-      background: var(--text-dark);
-      color: white;
-      border: none;
-      padding: 0.4rem 0.75rem;
-      font-size: 0.75rem;
-      font-weight: 700;
-      border-radius: 6px;
-      cursor: pointer;
-      align-self: flex-end;
+      margin-bottom: 0.8rem;
     }
     .blog-post {
       background: #ffffff;
       border: 1px solid var(--border-color);
       border-radius: 12px;
-      padding: 0.75rem;
+      padding: 0.85rem;
       margin-bottom: 0.75rem;
-      position: relative;
+    }
+    .blog-post-date {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-bottom: 0.2rem;
+      font-weight: 600;
     }
     .blog-post-img {
       width: 100%;
@@ -277,18 +251,6 @@
       object-fit: cover;
       border-radius: 8px;
       margin-top: 0.5rem;
-    }
-    .btn-delete-post {
-      position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
-      background: #ef4444;
-      color: white;
-      border: none;
-      font-size: 0.65rem;
-      padding: 0.2rem 0.4rem;
-      border-radius: 4px;
-      cursor: pointer;
     }
 
     .btn-text-gold {
@@ -308,6 +270,35 @@
     .btn-text-gold:active {
       transform: scale(0.95);
       opacity: 0.75;
+    }
+
+    /* Pie de página institucional (Footer) */
+    .site-footer {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+    }
+    .footer-link {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+    .footer-link:hover {
+      color: var(--accent-gold);
+    }
+    .footer-copy {
+      font-size: 0.65rem;
+      color: #94a3b8;
     }
   </style>
 </head>
@@ -385,21 +376,20 @@
       </div>
     </div>
 
-    <!-- Módulo Dinámico Tipo Blog -->
+    <!-- Módulo Novedades & Divulgación (Informativo Institucional) -->
     <div class="blog-section">
       <div class="blog-title">
-        <span>Novedades & Divulgación</span>
-        <button style="font-size:0.65rem; padding:0.2rem 0.5rem; cursor:pointer;" onclick="toggleBlogForm()">+ Publicar</button>
+        <span>Novedades & Comunicados Oficiales</span>
       </div>
 
-      <div class="blog-controls" id="blog-form" style="display:none;">
-        <input type="text" id="post-title" class="blog-input" placeholder="Título del comunicado...">
-        <textarea id="post-text" class="blog-textarea" rows="3" placeholder="Contenido de la nota..."></textarea>
-        <input type="text" id="post-img" class="blog-input" placeholder="URL de imagen (opcional)...">
-        <button class="btn-blog-add" onclick="agregarPublicacion()">Publicar Nota</button>
+      <div id="blog-feed">
+        <!-- Contenido publicado exclusivamente por los administradores -->
+        <div class="blog-post">
+          <div class="blog-post-date">COMUNICADO OFICIAL</div>
+          <div style="font-weight:800; font-size:0.8rem; color:var(--text-dark); margin-bottom:0.2rem;">Inicio del Protocolo OMNIH</div>
+          <div style="font-size:0.75rem; color:#475569; line-height:1.35;">Se establece la primera tesela fundacional de preservación inmutable de la memoria digital.</div>
+        </div>
       </div>
-
-      <div id="blog-feed"></div>
     </div>
 
     <div style="text-align: center; margin-top: 1rem; margin-bottom: 0.2rem;">
@@ -410,6 +400,19 @@
         Unirme al Protocolo
       </a>
     </div>
+
+    <!-- Pie de Página Institucional -->
+    <footer class="site-footer">
+      <div class="footer-links">
+        <a href="pautas-legales.html" class="footer-link">Pautas Legales</a>
+        <a href="terminos.html" class="footer-link">Términos de Servicio</a>
+        <a href="privacidad.html" class="footer-link">Política de Privacidad</a>
+        <a href="admin.html" class="footer-link" style="color: var(--accent-gold);">cPanel Admin</a>
+      </div>
+      <div class="footer-copy">
+        © Protocolo OMNIH — Red Inmutable de Preservación
+      </div>
+    </footer>
   </div>
 
   <script>
@@ -535,7 +538,7 @@
 
     dibujarRosa();
 
-    // DIBUJO ESTRUCTURAL ESTÁTICO DE EMERGENCIA (Garantiza jamás ver el espacio vacío)
+    // DIBUJO ESTRUCTURAL ESTÁTICO DE EMERGENCIA
     function crearGloboBase(containerId) {
       const container = d3.select(containerId);
       container.html("");
@@ -554,7 +557,7 @@
     crearGloboBase("#map-west");
     crearGloboBase("#map-east");
 
-    // DIBUJO VECTORIAL COMPLETO Y ACTIVACIÓN DE ROTACIÓN
+    // DIBUJO VECTORIAL Y ROTACIÓN
     fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
       .then(res => res.json())
       .then(world => {
@@ -598,11 +601,9 @@
           return svg;
         }
 
-        // Renderizado inicial garantizado
         const svgWest = renderCapas("#map-west", pathWest);
         const svgEast = renderCapas("#map-east", pathEast);
 
-        // Activación de rotación desacoplada
         function animate() {
           rotWest += 0.2;
           rotEast += 0.2;
@@ -610,111 +611,4 @@
           projWest.rotate([-rotWest, 0, 0]);
           projEast.rotate([-rotEast, 0, 0]);
 
-          svgWest.selectAll("path.land").attr("d", pathWest);
-          svgWest.select("path.graticule").attr("d", pathWest);
-
-          svgEast.selectAll("path.land").attr("d", pathEast);
-          svgEast.select("path.graticule").attr("d", pathEast);
-
-          requestAnimationFrame(animate);
-        }
-
-        animate();
-
-      }).catch(err => {
-        console.error("No se pudo descargar la geometría externa:", err);
-      });
-
-    // Lógica para consultar el backend Serverless con Google Gemini
-    async function consultarIA() {
-      const promptInput = document.getElementById('ai-prompt');
-      const responseBox = document.getElementById('ai-response');
-      const userText = promptInput.value.trim();
-
-      if (!userText) return;
-
-      responseBox.textContent = "Procesando consulta con la red...";
-      promptInput.value = "";
-
-      try {
-        const response = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt: userText })
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          responseBox.textContent = data.reply || "Consulta recibida correctamente.";
-        } else {
-          responseBox.textContent = "Respuesta del Orientador: El módulo IA está listo. (Configura GEMINI_API_KEY en Vercel para respuestas dinámicas).";
-        }
-      } catch (err) {
-        responseBox.textContent = "Respuesta del Orientador: El módulo IA está listo. (Configura GEMINI_API_KEY en Vercel para respuestas dinámicas).";
-      }
-    }
-
-    // Funciones del Blog Dinámico
-    let publicaciones = [
-      {
-        id: 1,
-        titulo: "Inicio del Protocolo OMNIH",
-        texto: "Se establece la primera tesela fundacional de preservación inmutable.",
-        imagen: ""
-      }
-    ];
-
-    function toggleBlogForm() {
-      const form = document.getElementById('blog-form');
-      form.style.display = form.style.display === 'none' ? 'flex' : 'none';
-    }
-
-    function renderBlog() {
-      const feed = document.getElementById('blog-feed');
-      feed.innerHTML = "";
-      publicaciones.forEach(post => {
-        const postDiv = document.createElement('div');
-        postDiv.className = 'blog-post';
-        postDiv.innerHTML = `
-          <button class="btn-delete-post" onclick="eliminarPublicacion(${post.id})">Quitar</button>
-          <div style="font-weight:800; font-size:0.8rem; color:var(--text-dark); margin-bottom:0.2rem;">${post.titulo}</div>
-          <div style="font-size:0.75rem; color:#475569; line-height:1.35;">${post.texto}</div>
-          ${post.imagen ? `<img src="${post.imagen}" class="blog-post-img" alt="Imagen post">` : ''}
-        `;
-        feed.appendChild(postDiv);
-      });
-    }
-
-    function agregarPublicacion() {
-      const titulo = document.getElementById('post-title').value.trim();
-      const texto = document.getElementById('post-text').value.trim();
-      const imagen = document.getElementById('post-img').value.trim();
-
-      if (!titulo || !texto) {
-        alert("Por favor completa el título y el contenido.");
-        return;
-      }
-
-      publicaciones.unshift({
-        id: Date.now(),
-        titulo: titulo,
-        texto: texto,
-        imagen: imagen
-      });
-
-      document.getElementById('post-title').value = "";
-      document.getElementById('post-text').value = "";
-      document.getElementById('post-img').value = "";
-      toggleBlogForm();
-      renderBlog();
-    }
-
-    function eliminarPublicacion(id) {
-      publicaciones = publicaciones.filter(p => p.id !== id);
-      renderBlog();
-    }
-
-    renderBlog();
-  </script>
-</body>
-</html>
+          svgWest.selectAll("path.land").attr("d", pathWe
