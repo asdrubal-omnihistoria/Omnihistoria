@@ -19,17 +19,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>OMNIH | Preservación Inmutable</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
   <style>
     :root {
-      --bg-canvas: #f1f5f9;
+      --bg-canvas: #edf2f7;
       --card-bg: #ffffff;
       --text-dark: #0f172a;
       --text-muted: #64748b;
-      /* Paleta Dorado Real y Brillante */
-      --gold-primary: #D4AF37;
-      --gold-bright: #FFD700;
-      --gold-border: #DAA520;
-      --gold-bg-light: #fffdf0;
+      --accent-gold: #c5a059;
       --accent-green: #10b981;
       --border-color: #e2e8f0;
     }
@@ -40,7 +38,7 @@
       font-family: system-ui, -apple-system, sans-serif; 
       -webkit-tap-highlight-color: transparent;
     }
-    body { background: var(--bg-canvas); color: var(--text-dark); padding: 0.75rem; }
+    body { background: var(--bg-canvas); color: var(--text-dark); padding: 1rem; }
     
     .app-frame {
       max-width: 480px;
@@ -48,7 +46,7 @@
       background: var(--card-bg);
       border-radius: 24px;
       border: 1px solid var(--border-color);
-      padding: 1.25rem 1rem 0 1rem;
+      padding: 1.25rem 1rem;
       box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
       overflow: hidden;
     }
@@ -64,175 +62,130 @@
       width: auto;
       object-fit: contain;
       display: block;
+      touch-action: manipulation;
     }
     .btn-login-top {
-      background: #ffffff; 
-      border: 2px solid var(--gold-border);
-      color: #b38600;
-      padding: 0.45rem 1rem; 
+      background: #fff; 
+      border: 1.5px solid var(--accent-gold);
+      color: var(--accent-gold);
+      padding: 0.35rem 0.85rem; 
       border-radius: 8px; 
-      font-weight: 800; 
+      font-weight: 700; 
       font-size: 0.75rem; 
       cursor: pointer;
       text-decoration: none;
       display: inline-block;
-      box-shadow: 0 2px 4px rgba(218, 165, 32, 0.15);
+      touch-action: manipulation;
+      user-select: none;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+    .btn-login-top:active {
+      transform: scale(0.96);
+      opacity: 0.85;
     }
 
     .hud-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
-    .hud-badge { background: #f8fafc; border: 1px solid #cbd5e1; color: var(--text-muted); font-size: 0.65rem; font-weight: 700; padding: 0.25rem 0.5rem; border-radius: 12px; }
+    .hud-badge { background: #f1f5f9; border: 1px solid #e2e8f0; color: var(--text-muted); font-size: 0.65rem; font-weight: 700; padding: 0.25rem 0.5rem; border-radius: 12px; }
     .status-ok { color: var(--accent-green); }
 
-    .hemisphere-titles { display: flex; justify-content: space-around; font-size: 0.65rem; font-weight: 800; color: var(--text-muted); margin: 0.6rem 0 0.2rem; user-select: none; }
+    .hemisphere-titles { display: flex; justify-content: space-between; font-size: 0.65rem; font-weight: 800; color: var(--text-muted); margin: 0.6rem 0 0.2rem; padding: 0 0.5rem; user-select: none; }
     
     .maps-container { 
       display: flex; 
       justify-content: center; 
       align-items: center; 
-      gap: 10px;
+      gap: 0;
       width: 100%;
-      margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 1;
+      touch-action: manipulation;
     }
     
-    .globe-canvas {
-      width: 180px;
-      height: 180px;
-      border-radius: 50%;
-      background: #f8fafc;
-      box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+    .map-globe {
+      width: 240px;
+      height: 240px;
+      flex-shrink: 0;
+      margin: 0;
+      touch-action: manipulation;
     }
+
+    .land { 
+      fill: #cbd5e1; 
+      stroke: #94a3b8; 
+      stroke-width: 0.4px; 
+      transition: fill 0.8s ease; 
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .land:hover, .land:active {
+      fill: #94a3b8;
+    }
+    .graticule { fill: none; stroke: #cbd5e1; stroke-width: 0.5px; stroke-dasharray: 2,2; pointer-events: none; }
+    .sphere { fill: #f8fafc; stroke: #94a3b8; stroke-width: 1.2px; pointer-events: none; }
+    
+    .country-active { fill: var(--accent-green) !important; }
 
     .compass-wrapper { 
       text-align: center; 
-      margin-top: -10px; 
+      margin-top: -18px; 
       position: relative; 
       z-index: 2; 
       pointer-events: none;
+      user-select: none;
     }
 
     .info-card { border: 1px solid var(--border-color); border-radius: 16px; padding: 1.1rem; margin-top: 0.4rem; }
-    .card-title { font-size: 1rem; font-weight: 900; line-height: 1.25; }
+    
+    .card-title { font-size: 1.05rem; font-weight: 900; line-height: 1.25; }
     
     .counter-number {
       font-size: 1.1rem;
       font-weight: 900;
       color: var(--text-dark);
+      display: inline-block;
+      transition: transform 0.3s ease, color 0.3s ease;
+    }
+    .counter-pulse {
+      transform: scale(1.3);
+      color: var(--accent-gold);
     }
 
-    .card-sub { font-size: 0.8rem; color: var(--text-muted); margin: 0.35rem 0 0.8rem; }
-    .manifesto { font-size: 0.78rem; color: #334155; line-height: 1.45; margin-bottom: 0.8rem; }
+    .card-sub { font-size: 0.82rem; color: var(--text-muted); margin: 0.35rem 0 0.8rem; }
+    .manifesto { font-size: 0.8rem; color: #334155; line-height: 1.45; margin-bottom: 0.8rem; }
     
     .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; text-align: center; }
-    .metric-unit { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; padding: 0.6rem 0.2rem; }
-    .metric-val { font-size: 0.85rem; font-weight: 900; display: block; color: var(--text-dark); }
+    .metric-unit { 
+      background: #f8fafc; 
+      border: 1px solid var(--border-color); 
+      border-radius: 10px; 
+      padding: 0.6rem 0.2rem; 
+      touch-action: manipulation;
+      user-select: none;
+      transition: background-color 0.2s ease;
+    }
+    .metric-unit:active {
+      background: #f1f5f9;
+    }
+    .metric-val { font-size: 0.9rem; font-weight: 900; display: block; transition: all 0.3s ease; }
     .metric-lbl { font-size: 0.62rem; color: var(--text-muted); display: block; }
 
-    /* Módulo Orientador IA Gemini - Dorado Real */
-    .ai-orienter-card {
-      border: 2px solid var(--gold-border);
-      border-radius: 16px;
-      padding: 1rem;
-      margin-top: 1rem;
-      background: var(--gold-bg-light);
-      box-shadow: 0 4px 12px rgba(218, 165, 32, 0.08);
-    }
-    .ai-header {
-      font-size: 0.85rem;
-      font-weight: 800;
-      color: #b38600;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      margin-bottom: 0.5rem;
-    }
-    .ai-response-box {
-      font-size: 0.78rem;
-      color: #334155;
-      line-height: 1.4;
-      background: #ffffff;
-      border: 1px solid var(--gold-border);
-      border-radius: 10px;
-      padding: 0.75rem;
-      min-height: 50px;
-      margin-bottom: 0.6rem;
-    }
-    .ai-input-group { display: flex; gap: 0.4rem; }
-    .ai-input {
-      flex: 1;
-      padding: 0.5rem 0.75rem;
-      font-size: 0.75rem;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      outline: none;
-    }
-    .ai-input:focus {
-      border-color: var(--gold-border);
-    }
-    .btn-ai-send {
-      background: linear-gradient(135deg, #FFD700 0%, #DAA520 100%);
-      color: #1a1000;
-      border: none;
-      padding: 0.5rem 1rem;
-      font-size: 0.75rem;
-      font-weight: 800;
-      border-radius: 8px;
-      cursor: pointer;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    /* Módulo Novedades & Divulgación */
-    .blog-section {
-      margin-top: 1.2rem;
-      border-top: 1px dashed var(--border-color);
-      padding-top: 1rem;
-    }
-    .blog-title { font-size: 0.9rem; font-weight: 800; color: var(--text-dark); margin-bottom: 0.8rem; }
-    .blog-post { background: #ffffff; border: 1px solid var(--border-color); border-radius: 12px; padding: 0.85rem; margin-bottom: 0.75rem; }
-    .blog-post-date { font-size: 0.65rem; color: var(--text-muted); margin-bottom: 0.2rem; font-weight: 700; }
-
     .btn-text-gold {
-      color: #b38600;
+      background: none;
+      border: none;
+      color: var(--accent-gold);
       font-weight: 800;
       font-size: 0.95rem;
-      text-decoration: none;
+      cursor: pointer;
       display: inline-block;
-      padding: 0.4rem 1rem;
-      border-radius: 8px;
-      border: 1px solid var(--gold-border);
-      background: #ffffff;
-    }
-
-    /* Pie de página institucional Negro con Dorado y Blanco */
-    .site-footer {
-      margin-top: 1.5rem;
-      margin-left: -1rem;
-      margin-right: -1rem;
-      padding: 1.5rem 1rem;
-      background: #090d16;
-      color: #ffffff;
-      text-align: center;
-      border-bottom-left-radius: 24px;
-      border-bottom-right-radius: 24px;
-    }
-    .footer-links {
-      display: flex;
-      justify-content: center;
-      gap: 1.2rem;
-      flex-wrap: wrap;
-      margin-bottom: 0.85rem;
-    }
-    .footer-link {
-      font-size: 0.75rem;
-      color: #f8fafc;
+      padding: 0.3rem 0.8rem;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+      user-select: none;
       text-decoration: none;
-      font-weight: 600;
+      touch-action: manipulation;
     }
-    .footer-link:hover { color: var(--gold-bright); }
-    .footer-copy {
-      font-size: 0.65rem;
-      color: #94a3b8;
-      border-top: 1px solid #1e293b;
-      padding-top: 0.85rem;
+    .btn-text-gold:active {
+      transform: scale(0.95);
+      opacity: 0.75;
     }
   </style>
 </head>
@@ -240,7 +193,7 @@
 
   <div class="app-frame">
     <div class="top-navbar">
-      <a href="indice.html">
+      <a href="indice.html" style="touch-action: manipulation;">
         <img src="Screenshot_20260902-152157_1.jpg" alt="OMNIH" class="brand-logo-img">
       </a>
       <a href="login.html" class="btn-login-top">Iniciar sesión</a>
@@ -257,12 +210,12 @@
     </div>
 
     <div class="maps-container">
-      <canvas id="globeWest" class="globe-canvas" width="180" height="180"></canvas>
-      <canvas id="globeEast" class="globe-canvas" width="180" height="180"></canvas>
+      <div id="map-west" class="map-globe"></div>
+      <div id="map-east" class="map-globe"></div>
     </div>
 
     <div class="compass-wrapper">
-      <canvas id="miRosa" width="70" height="70"></canvas>
+      <canvas id="miRosa" width="84" height="84"></canvas>
     </div>
 
     <div class="info-card">
@@ -296,182 +249,186 @@
       </div>
     </div>
 
-    <!-- Módulo Orientador IA Gemini -->
-    <div class="ai-orienter-card">
-      <div class="ai-header">
-        <span>🤖</span> ORIENTADOR DE IA OMNIH
-      </div>
-      <div class="ai-response-box" id="ai-response">
-        ¡Saludos! Soy el orientador del protocolo OMNIH. ¿En qué puedo guiarte hoy respecto a tu tesela o la red inmutable?
-      </div>
-      <div class="ai-input-group">
-        <input type="text" id="ai-prompt" class="ai-input" placeholder="Escribe una consulta...">
-        <button class="btn-ai-send" onclick="consultarIA()">Consultar</button>
-      </div>
-    </div>
-
-    <!-- Módulo Novedades & Divulgación -->
-    <div class="blog-section">
-      <div class="blog-title">
-        <span>Novedades & Comunicados Oficiales</span>
-      </div>
-
-      <div id="blog-feed">
-        <div class="blog-post">
-          <div class="blog-post-date">COMUNICADO OFICIAL</div>
-          <div style="font-weight:800; font-size:0.8rem; color:var(--text-dark); margin-bottom:0.2rem;">Inicio del Protocolo OMNIH</div>
-          <div style="font-size:0.75rem; color:#475569; line-height:1.35;">Se establece la primera tesela fundacional de preservación inmutable de la memoria digital.</div>
-        </div>
-      </div>
-    </div>
-
-    <div style="text-align: center; margin-top: 1.2rem; margin-bottom: 0.5rem;">
-      <span style="font-size: 0.7rem; font-weight: 800; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">
+    <div style="text-align: center; margin-top: 1rem; margin-bottom: 0.2rem;">
+      <span style="font-size: 0.7rem; font-weight: 800; color: var(--text-muted); letter-spacing: 0.5px; display: block; margin-bottom: 0.2rem;">
         REGISTRARME
       </span>
       <a href="registro.html" class="btn-text-gold">
         Unirme al Protocolo
       </a>
     </div>
-
-    <!-- Pie de Página Negro Institucional (Sin cPanel visible) -->
-    <footer class="site-footer">
-      <div class="footer-links">
-        <a href="pautas-legales.html" class="footer-link">Pautas Legales</a>
-        <a href="terminos.html" class="footer-link">Términos de Servicio</a>
-        <a href="privacidad.html" class="footer-link">Política de Privacidad</a>
-      </div>
-      <div class="footer-copy">
-        © Protocolo OMNIH — Red Inmutable de Preservación
-      </div>
-    </footer>
   </div>
 
   <script>
+    let paisesRegistrados = [];
+
     function actualizarRelojUTC() {
       const ahora = new Date();
-      const h = String(ahora.getUTCHours()).padStart(2, '0');
-      const m = String(ahora.getUTCMinutes()).padStart(2, '0');
-      const s = String(ahora.getUTCSeconds()).padStart(2, '0');
-      document.getElementById('utc-clock').textContent = `TIEMPO UTC: ${h}:${m}:${s} UTC`;
+      const horas = String(ahora.getUTCHours()).padStart(2, '0');
+      const minutos = String(ahora.getUTCMinutes()).padStart(2, '0');
+      const segundos = String(ahora.getUTCSeconds()).padStart(2, '0');
+      document.getElementById('utc-clock').textContent = `TIEMPO UTC: ${horas}:${minutos}:${segundos} UTC`;
     }
     setInterval(actualizarRelojUTC, 1000);
     actualizarRelojUTC();
 
-    function renderGlobe(canvasId, isEast) {
-      const canvas = document.getElementById(canvasId);
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      const w = canvas.width, h = canvas.height, cx = w/2, cy = h/2, r = w/2 - 4;
-      let angle = isEast ? 180 : 0;
-
-      function draw() {
-        ctx.clearRect(0, 0, w, h);
-
-        ctx.beginPath();
-        ctx.arc(cx, cy, r, 0, Math.PI * 2);
-        ctx.fillStyle = "#ffffff";
-        ctx.fill();
-        ctx.strokeStyle = "#DAA520";
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        ctx.strokeStyle = "#f1f5f9";
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.arc(cx, cy, r * 0.5, 0, Math.PI * 2);
-        ctx.moveTo(cx - r, cy); ctx.lineTo(cx + r, cy);
-        ctx.moveTo(cx, cy - r); ctx.lineTo(cx, cy + r);
-        ctx.stroke();
-
-        ctx.fillStyle = "#cbd5e1";
-        ctx.strokeStyle = "#94a3b8";
-        ctx.lineWidth = 1;
-
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(cx, cy, r - 1, 0, Math.PI * 2);
-        ctx.clip();
-
-        let rad = (angle * Math.PI) / 180;
-        let shift = Math.sin(rad) * (r * 0.4);
-
-        if (!isEast) {
-          ctx.beginPath();
-          ctx.ellipse(cx - r*0.2 + shift, cy - r*0.3, r*0.35, r*0.25, 0.2, 0, Math.PI * 2);
-          ctx.fill(); ctx.stroke();
-          ctx.beginPath();
-          ctx.ellipse(cx + shift, cy + r*0.3, r*0.22, r*0.38, -0.2, 0, Math.PI * 2);
-          ctx.fill(); ctx.stroke();
-        } else {
-          ctx.beginPath();
-          ctx.ellipse(cx - shift, cy - r*0.2, r*0.45, r*0.3, 0, 0, Math.PI * 2);
-          ctx.fill(); ctx.stroke();
-          ctx.beginPath();
-          ctx.ellipse(cx - r*0.1 - shift, cy + r*0.2, r*0.25, r*0.35, 0.1, 0, Math.PI * 2);
-          ctx.fill(); ctx.stroke();
-        }
-
-        ctx.restore();
-
-        angle += 0.8;
-        requestAnimationFrame(draw);
+    function registrarPais(idIso, nombre) {
+      if (!paisesRegistrados.some(p => p.id === idIso)) {
+        paisesRegistrados.push({ id: idIso, nombre: nombre });
+        d3.selectAll(`#country-${idIso}`).classed("country-active", true);
+        actualizarInterfazMetricas();
       }
-      draw();
     }
 
-    renderGlobe('globeWest', false);
-    renderGlobe('globeEast', true);
+    function actualizarInterfazMetricas() {
+      const numElem = document.getElementById('num-paises');
+      const listaElem = document.getElementById('lista-paises');
+      const count = paisesRegistrados.length;
+
+      numElem.classList.add('counter-pulse');
+      setTimeout(() => numElem.classList.remove('counter-pulse'), 300);
+      numElem.textContent = count;
+      
+      if (count === 0) {
+        listaElem.textContent = "Esperando señales de registro...";
+        document.getElementById('val-storage').textContent = "0.00 GB";
+        document.getElementById('val-inmutable').textContent = "100%";
+        document.getElementById('val-interact').textContent = "0";
+      } else {
+        const nombres = paisesRegistrados.map(p => p.nombre).join(', ');
+        listaElem.textContent = `Países Activos: ${nombres}`;
+        document.getElementById('val-storage').textContent = `${(count * 0.21).toFixed(2)} GB`;
+        document.getElementById('val-inmutable').textContent = "100%";
+        document.getElementById('val-interact').textContent = `${count}`;
+      }
+    }
 
     function dibujarRosa() {
       const canvas = document.getElementById('miRosa');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
-      const cx = canvas.width / 2, cy = canvas.height / 2, r = canvas.width * 0.38;
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      const r = (canvas.width * 0.38) * 0.70;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
-      ctx.strokeStyle = '#DAA520'; ctx.lineWidth = 1.5; ctx.stroke();
 
-      ctx.save(); ctx.translate(cx, cy);
-      
-      for (let i = 0; i < 4; i++) {
-        ctx.rotate(Math.PI / 2);
-        ctx.beginPath();
-        ctx.moveTo(0, 0); ctx.lineTo(-4, -r + 4); ctx.lineTo(0, -r); ctx.fillStyle = '#FFD700'; ctx.fill();
-        ctx.beginPath();
-        ctx.moveTo(0, 0); ctx.lineTo(4, -r + 4); ctx.lineTo(0, -r); ctx.fillStyle = '#DAA520'; ctx.fill();
-      }
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.strokeStyle = '#c5a059';
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
 
-      ctx.font = 'bold 8px sans-serif'; ctx.fillStyle = '#0f172a'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillText('N', 0, -r + 10);
+      ctx.beginPath();
+      ctx.arc(cx, cy, r * 0.95, 0, Math.PI * 2);
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(Math.PI / 4);
+      dibujarPuntas(ctx, 4, r * 0.2, r * 0.65, '#cbd5e1', '#94a3b8');
+      ctx.restore();
+
+      ctx.save();
+      ctx.translate(cx, cy);
+      dibujarPuntas(ctx, 4, r * 0.25, r * 0.9, '#d4af37', '#997a15');
+
+      ctx.font = 'bold 8px sans-serif';
+      ctx.fillStyle = '#1e293b';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('N', 0, -r * 0.73);
+      ctx.fillText('S', 0, r * 0.73);
+      ctx.fillText('E', r * 0.73, 0);
+      ctx.fillText('O', -r * 0.73, 0);
+
+      ctx.beginPath();
+      ctx.arc(0, 0, 3, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      ctx.strokeStyle = '#d4af37';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
       ctx.restore();
     }
+
+    function dibujarPuntas(ctx, cant, rInt, rExt, cClaro, cOscuro) {
+      const paso = (Math.PI * 2) / cant;
+      for (let i = 0; i < cant; i++) {
+        const a = i * paso - Math.PI / 2;
+        const aMitad = a + paso / 2;
+        const aSig = a + paso;
+
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(Math.cos(a) * rExt, Math.sin(a) * rExt);
+        ctx.lineTo(Math.cos(aMitad) * rInt, Math.sin(aMitad) * rInt);
+        ctx.closePath();
+        ctx.fillStyle = cClaro;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(Math.cos(aSig) * rExt, Math.sin(aSig) * rExt);
+        ctx.lineTo(Math.cos(aMitad) * rInt, Math.sin(aMitad) * rInt);
+        ctx.closePath();
+        ctx.fillStyle = cOscuro;
+        ctx.fill();
+      }
+    }
+
     dibujarRosa();
 
-    async function consultarIA() {
-      const promptInput = document.getElementById('ai-prompt');
-      const responseBox = document.getElementById('ai-response');
-      if (!promptInput.value.trim()) return;
+    fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+      .then(res => res.json())
+      .then(world => {
+        const countries = topojson.feature(world, world.objects.countries);
 
-      responseBox.textContent = "Procesando consulta con la red...";
-      try {
-        const response = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt: promptInput.value })
-        });
-        if (response.ok) {
-          const data = await response.json();
-          responseBox.textContent = data.reply || "Consulta recibida correctamente.";
-        } else {
-          responseBox.textContent = "Orientador OMNIH activo y respondiendo.";
+        function renderGlobe(containerId, centerLon) {
+          const width = 240, height = 240;
+          const radius = 118;
+          const projection = d3.geoOrthographic()
+            .scale(radius)
+            .translate([width / 2, height / 2])
+            .rotate([-centerLon, 0, 0]);
+
+          const path = d3.geoPath().projection(projection);
+          const svg = d3.select(containerId).append("svg")
+            .attr("viewBox", `0 0 ${width} ${height}`)
+            .attr("width", "100%")
+            .attr("height", "100%");
+
+          svg.append("circle")
+            .attr("cx", width/2).attr("cy", height/2).attr("r", radius)
+            .attr("class", "sphere");
+
+          svg.append("path")
+            .datum(d3.geoGraticule()())
+            .attr("class", "graticule")
+            .attr("d", path);
+
+          svg.selectAll("path.land")
+            .data(countries.features)
+            .enter().append("path")
+            .attr("class", d => {
+              const estaActivo = paisesRegistrados.some(p => p.id === d.id);
+              return `land ${estaActivo ? 'country-active' : ''}`;
+            })
+            .attr("id", d => `country-${d.id}`)
+            .attr("d", path)
+            .on("click touchend", function(event, d) {
+              if (event.type === 'touchend') event.preventDefault();
+              const nombrePais = d.properties ? d.properties.name : `ISO ${d.id}`;
+              registrarPais(d.id, nombrePais);
+            });
         }
-      } catch (err) {
-        responseBox.textContent = "Orientador OMNIH activo y respondiendo.";
-      }
-      promptInput.value = "";
-    }
+
+        renderGlobe("#map-west", -85);
+        renderGlobe("#map-east", 30);
+      });
   </script>
 </body>
-</html>
+        </html>
