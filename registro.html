@@ -53,24 +53,22 @@
       margin-bottom: 0.25rem;
     }
 
-    /* CONTENEDOR MAESTRO CENTRALIZADO DEL LOGO (Arriba y a la Izquierda) */
+    /* CONTENEDOR MAESTRO DEL LOGO CON DIMENSIONES EXPLÍCITAS PARA RENDERIZADO UNIFORME */
     .brand-logo-link {
-      --base-font-size: 16px;
-      font-size: var(--base-font-size);
       display: inline-flex;
       align-items: center;
-      gap: 0.5em;
-      line-height: 1;
+      gap: 10px;
       text-decoration: none;
       touch-action: manipulation;
     }
 
     .dna-box {
-      width: 1.2em;
-      height: 2.4em;
+      width: 28px;
+      height: 48px;
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-shrink: 0;
     }
 
     .dna-icon {
@@ -82,13 +80,14 @@
     }
 
     .text-omnih {
-      font-size: 1.5em;
+      font-size: 1.8rem;
       font-weight: 800;
       letter-spacing: 0.04em;
       background: linear-gradient(180deg, #fef08a 0%, #eab308 35%, #ca8a04 70%, #854d0e 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       font-family: 'Arial', sans-serif;
+      line-height: 1;
     }
 
     .btn-top-login {
@@ -523,4 +522,4 @@
   }
 </script>
 </body>
-  </html>
+            </html>
