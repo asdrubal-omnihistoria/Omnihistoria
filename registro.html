@@ -53,7 +53,7 @@
       margin-bottom: 0.25rem;
     }
 
-    /* CONTENEDOR MAESTRO DEL LOGO CON DIMENSIONES EXPLÍCITAS PARA RENDERIZADO UNIFORME */
+    /* CONTENEDOR MAESTRO CENTRALIZADO DEL LOGO (Arriba y a la Izquierda) */
     .brand-logo-link {
       display: inline-flex;
       align-items: center;
@@ -62,9 +62,11 @@
       touch-action: manipulation;
     }
 
+    /* CORRECCIÓN TÉCNICA: Bloqueo explícito en px y aspect-ratio para evitar colapso en Vercel/GitHub */
     .dna-box {
-      width: 28px;
-      height: 48px;
+      width: 20px;
+      height: 40px;
+      aspect-ratio: 1 / 2;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -72,15 +74,16 @@
     }
 
     .dna-icon {
-      width: 100%;
-      height: 100%;
+      width: 20px;
+      height: 40px;
       transform: rotate(45deg);
       transform-origin: center;
       overflow: visible;
+      display: block;
     }
 
     .text-omnih {
-      font-size: 1.8rem;
+      font-size: 24px;
       font-weight: 800;
       letter-spacing: 0.04em;
       background: linear-gradient(180deg, #fef08a 0%, #eab308 35%, #ca8a04 70%, #854d0e 100%);
@@ -305,7 +308,8 @@
   <div class="top-navbar">
     <a href="interfaz-usuario.html" class="brand-logo-link" title="Ir a la Interfaz Institucional">
       <div class="dna-box">
-        <svg viewBox="0 0 120 240" class="dna-icon" xmlns="http://www.w3.org/2000/svg">
+        <!-- SVG blindado con ancho/alto explícitos y preserveAspectRatio -->
+        <svg viewBox="0 0 120 240" width="20" height="40" preserveAspectRatio="xMidYMid meet" class="dna-icon" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="hebraFondo" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stop-color="#b03a8a" />
@@ -522,4 +526,4 @@
   }
 </script>
 </body>
-    </html>
+  </html>
