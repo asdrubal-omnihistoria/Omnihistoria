@@ -53,12 +53,44 @@
       margin-bottom: 0.25rem;
     }
 
-    .brand-logo-img {
-      height: 40px;
-      width: auto;
-      object-fit: contain;
-      display: block;
+    /* CONTENEDOR MAESTRO CENTRALIZADO DEL LOGO (Arriba y a la Izquierda) */
+    .brand-logo-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
       touch-action: manipulation;
+    }
+
+    /* CORRECCIÓN TÉCNICA: Bloqueo explícito en px y aspect-ratio */
+    .dna-box {
+      width: 20px;
+      height: 40px;
+      aspect-ratio: 1 / 2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .dna-icon {
+      width: 20px;
+      height: 40px;
+      transform: rotate(45deg);
+      transform-origin: center;
+      overflow: visible;
+      display: block;
+    }
+
+    .text-omnih {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      background: linear-gradient(180deg, #fef08a 0%, #eab308 35%, #ca8a04 70%, #854d0e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-family: 'Arial', sans-serif;
+      line-height: 1;
     }
 
     /* SUB-LÍNEA: PROTOCOLO - INICIAR SESIÓN */
@@ -163,8 +195,47 @@
   
   <!-- BARRA SUPERIOR: SOLO ELEMENTO IDENTITARIO -->
   <div class="top-navbar">
-    <a href="index.html">
-      <img src="Screenshot_20260902-152157_1.jpg" alt="OMNIH" class="brand-logo-img">
+    <a href="index.html" class="brand-logo-link" title="Ir al Inicio">
+      <div class="dna-box">
+        <!-- SVG blindado con ancho/alto explícitos y preserveAspectRatio -->
+        <svg viewBox="0 0 120 240" width="20" height="40" preserveAspectRatio="xMidYMid meet" class="dna-icon" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="hebraFondo" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#b03a8a" />
+              <stop offset="35%" stop-color="#704fa0" />
+              <stop offset="70%" stop-color="#3b7cb3" />
+              <stop offset="100%" stop-color="#4aa47a" />
+            </linearGradient>
+
+            <linearGradient id="hebraFrente" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#d95438" />
+              <stop offset="40%" stop-color="#f0a441" />
+              <stop offset="80%" stop-color="#e1c662" />
+              <stop offset="100%" stop-color="#cbaf4b" />
+            </linearGradient>
+          </defs>
+
+          <!-- Peldaños conectores -->
+          <g stroke-width="4.5" stroke-linecap="round" opacity="0.85">
+            <line x1="34" y1="35" x2="86" y2="35" stroke="#b03a8a" />
+            <line x1="34" y1="65" x2="86" y2="65" stroke="#704fa0" />
+            <line x1="34" y1="95" x2="86" y2="95" stroke="#3b7cb3" />
+            <line x1="34" y1="125" x2="86" y2="125" stroke="#4aa47a" />
+            <line x1="34" y1="155" x2="86" y2="155" stroke="#d95438" />
+            <line x1="34" y1="185" x2="86" y2="185" stroke="#f0a441" />
+            <line x1="34" y1="215" x2="86" y2="215" stroke="#e1c662" />
+          </g>
+          
+          <!-- Hebra 1 -->
+          <path d="M 30,15 C 30,50 90,50 90,85 C 90,120 30,120 30,155 C 30,190 90,190 90,225" 
+                fill="none" stroke="url(#hebraFondo)" stroke-width="11" stroke-linecap="round" />
+          
+          <!-- Hebra 2 -->
+          <path d="M 90,15 C 90,50 30,50 30,85 C 30,120 90,120 90,155 C 90,190 30,190 30,225" 
+                fill="none" stroke="url(#hebraFrente)" stroke-width="11" stroke-linecap="round" />
+        </svg>
+      </div>
+      <div class="text-omnih">OMNIH</div>
     </a>
   </div>
 
@@ -248,4 +319,4 @@
   }
 </script>
 </body>
-</html>
+  </html>
