@@ -1,0 +1,58 @@
+{
+  "index_page": {
+    "ubicacion": "index.html",
+    "funcion": "Área de contenidos dinámicos, tarjetas explicativas y ficha técnica situadas debajo del registro principal.",
+    "seccion_tarjetas": {
+      "subtitulo": "Contenidos y Recursos del Sistema",
+      "tarjetas": [
+        {
+          "id": "card_01",
+          "categoria": "Arquitectura",
+          "titulo": "Preservación y Registro Digital",
+          "descripcion": "Módulo diseñado para la conservación estructurada de datos e información institucional.",
+          "enlace_texto": "Consultar detalles"
+        }
+      ]
+    },
+    "seccion_ficha_tecnica": {
+      "subtitulo": "Especificaciones Técnicas del Entorno",
+      "metadatos": [
+        {
+          "clave": "Plataforma",
+          "valor": "Web Progresiva / GitHub Architecture"
+        },
+        {
+          "clave": "Compatibilidad",
+          "valor": "Multi-dispositivo HD / Estándar Abierto"
+        }
+      ]
+    }
+  },
+  "registro_page": {
+    "ubicacion": "registro.html",
+    "funcion": "Contenedor de recursos gráficos, imágenes en alta resolución (HD) o video explicativo para el área de registro.",
+    "seccion_multimedia": {
+      "subtitulo": "Recursos e Identidad Visual",
+      "elementos": [
+        {
+          "id": "media_01",
+          "tipo": "imagen_hd",
+          "url": "https://via.placeholder.com/1200x800.webp?text=Imagen+HD+Registro",
+          "leyenda_alt": "Infografía conceptual del área de registro",
+          "etiqueta": "Vista Previa HD"
+        }
+      ]
+    }
+  },
+  "footer_global": {
+    "ubicacion": "Todas las interfaces (index.html, registro.html, etc.)",
+    "funcion": "Pie de página institucional para direccionar a los portales oficiales.",
+    "derechos": "© 2026 Plataforma Digital. Todos los derechos reservados.",
+    "enlaces": {
+      "org_url": "https://ejemplo.org",
+      "org_texto": "Portal Principal (.ORG)",
+      "io_url": "https://ejemplo.io",
+      "io_texto": "Repositorio y Recursos (.IO)"
+    }
+  }
+        }
