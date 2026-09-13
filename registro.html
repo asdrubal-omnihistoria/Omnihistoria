@@ -45,7 +45,6 @@
       padding: 1.5rem 1.25rem;
     }
 
-    /* BARRA SUPERIOR: ELEMENTO IDENTITARIO + INICIAR SESIÓN */
     .top-navbar {
       display: flex;
       justify-content: space-between;
@@ -53,7 +52,6 @@
       margin-bottom: 0.25rem;
     }
 
-    /* CONTENEDOR MAESTRO CENTRALIZADO DEL LOGO (Arriba y a la Izquierda) */
     .brand-logo-link {
       display: inline-flex;
       align-items: center;
@@ -62,7 +60,6 @@
       touch-action: manipulation;
     }
 
-    /* CORRECCIÓN TÉCNICA: Bloqueo explícito en px y aspect-ratio para evitar colapso en Vercel/GitHub */
     .dna-box {
       width: 20px;
       height: 40px;
@@ -114,7 +111,6 @@
       background-color: #f8fafc;
     }
 
-    /* SUB-LÍNEA: PROTOCOLO - REGISTRO */
     .protocol-subbar {
       margin-bottom: 1.25rem;
       text-align: left;
@@ -131,7 +127,6 @@
       padding: 0;
     }
 
-    /* SELECTOR DE ENTIDAD (PERSONA NATURAL / COLECTIVO) */
     .entity-selector {
       display: flex;
       gap: 10px;
@@ -243,7 +238,6 @@
       color: var(--accent-gold);
     }
 
-    /* MODAL DE CONFIRMACIÓN DE CORREO */
     .modal-confirmacion {
       display: none;
       position: absolute;
@@ -304,7 +298,6 @@
 
 <div class="container">
   
-  <!-- BARRA SUPERIOR: LOGO PERFECCIONADO A LA IZQUIERDA | INICIAR SESIÓN DERECHA -->
   <div class="top-navbar">
     <a href="preservador-provisorio.html" class="brand-logo-link" title="Ir al Preservador Provisorio">
       <div class="dna-box">
@@ -325,7 +318,6 @@
             </linearGradient>
           </defs>
 
-          <!-- Peldaños conectores -->
           <g stroke-width="4.5" stroke-linecap="round" opacity="0.85">
             <line x1="34" y1="35" x2="86" y2="35" stroke="#b03a8a" />
             <line x1="34" y1="65" x2="86" y2="65" stroke="#704fa0" />
@@ -336,11 +328,9 @@
             <line x1="34" y1="215" x2="86" y2="215" stroke="#e1c662" />
           </g>
           
-          <!-- Hebra 1 -->
           <path d="M 30,15 C 30,50 90,50 90,85 C 90,120 30,120 30,155 C 30,190 90,190 90,225" 
                 fill="none" stroke="url(#hebraFondo)" stroke-width="11" stroke-linecap="round" />
           
-          <!-- Hebra 2 -->
           <path d="M 90,15 C 90,50 30,50 30,85 C 30,120 90,120 90,155 C 90,190 30,190 30,225" 
                 fill="none" stroke="url(#hebraFrente)" stroke-width="11" stroke-linecap="round" />
         </svg>
@@ -351,17 +341,14 @@
     <a href="login.html" class="btn-top-login">Iniciar sesión</a>
   </div>
 
-  <!-- LÍNEA INFERIOR: PROTOCOLO - REGISTRO -->
   <div class="protocol-subbar">
     <span class="header-protocol-text">Protocolo - Registro</span>
   </div>
 
   <div class="form-body">
     
-    <!-- FORMULARIO DE REGISTRO -->
     <form id="formRegister" onsubmit="procesarRegistro(event)">
 
-      <!-- SELECTOR: PERSONA NATURAL / COLECTIVO JURÍDICO -->
       <div class="entity-selector">
         <button type="button" class="btn-entity active" id="btnNatural" onclick="seleccionarTipo('natural')">Persona Natural</button>
         <button type="button" class="btn-entity" id="btnJuridica" onclick="seleccionarTipo('juridica')">Colectivo / Jurídica</button>
@@ -385,13 +372,12 @@
       <div class="form-group">
         <label for="regPassword">Contraseña</label>
         <input type="password" id="regPassword" placeholder="••••••••" autocomplete="new-password" enterkeyhint="done" required minlength="8">
-        <div class="pwd-hint">Mínimo 8 caracteres (debe incluir letras y números).</div>
+        <div class="pwd-hint">La contraseña debe tener al menos 8 caracteres.</div>
       </div>
 
       <button type="submit" class="btn-submit" id="btnRegisterSubmit">Registrarme</button>
     </form>
 
-    <!-- Frase Institucional Dinámica -->
     <div class="quote-box">
       <p class="quote-text" id="displayQuoteText">"Al registrarte te sumas al compromiso de hacer todo lo que este en nuestras posibilidades, para que tú nombre, el de tu familia y toda nuestra comunidad, sean parte de la historia del futuro."</p>
       <span class="quote-source" id="displayQuoteSource">Fuente: Comunidad de la Omnihistoria. omnihistoria.io</span>
@@ -399,7 +385,6 @@
 
   </div>
 
-  <!-- Pantalla Flotante tras pulsar Registrarme -->
   <div class="modal-confirmacion" id="modalConfirmacion">
     <div class="modal-icon">📩</div>
     <div class="modal-title">¡Enlace de Confirmación Enviado!</div>
@@ -472,19 +457,15 @@
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
-  function validarPassword(pwd) {
-    const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
-    return regex.test(pwd);
-  }
-
   async function procesarRegistro(e) {
     e.preventDefault();
     const nombre = document.getElementById('regNombre').value;
     const email = document.getElementById('regEmail').value;
     const password = document.getElementById('regPassword').value;
 
-    if (!validarPassword(password)) {
-      alert("La contraseña debe tener al menos 8 caracteres e incluir letras y números.");
+    // VALIDACIÓN DIRECTA: Exige un mínimo de 8 caracteres
+    if (!password || password.trim().length < 8) {
+      alert("La contraseña debe tener al menos 8 caracteres.");
       return;
     }
 
@@ -503,7 +484,7 @@
       setTimeout(() => {
         document.getElementById('modalUserEmail').innerText = email;
         document.getElementById('modalConfirmacion').style.display = 'flex';
-      }, 700);
+      }, 500);
     } catch (error) {
       console.error("Error en el registro:", error);
       alert("Ocurrió un error al procesar el registro.");
@@ -525,4 +506,4 @@
   }
 </script>
 </body>
-            </html>
+          </html>
