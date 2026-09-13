@@ -187,6 +187,112 @@
       transform: scale(0.95);
       opacity: 0.75;
     }
+
+    /* ESTILOS DINÁMICOS Y PIE DE PÁGINA VISIBLE */
+    .app-dyn-section {
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px dashed var(--border-color);
+    }
+    .app-dyn-title {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    .app-dyn-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .app-dyn-card {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 0.85rem;
+      text-align: left;
+    }
+    .app-dyn-badge {
+      display: inline-block;
+      background: #e2e8f0;
+      color: var(--text-dark);
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .app-dyn-card-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 0.25rem;
+    }
+    .app-dyn-card-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.35;
+      margin-bottom: 0.5rem;
+    }
+    .app-dyn-link {
+      color: var(--accent-gold);
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
+    .app-dyn-tech {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .app-dyn-tech-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.72rem;
+    }
+    .app-dyn-tech-row:last-child {
+      border-bottom: none;
+    }
+    .app-dyn-tech-key {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .app-dyn-tech-val {
+      color: var(--text-dark);
+      font-weight: 800;
+    }
+    
+    /* ESTILOS DEL PIE DE PÁGINA INSTITUCIONAL VISIBLE */
+    .app-global-footer {
+      border-top: 1px solid var(--border-color);
+      padding-top: 1rem;
+      margin-top: 1.5rem;
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    .app-footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 0.4rem;
+    }
+    .app-footer-links a {
+      color: var(--accent-gold);
+      text-decoration: none;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
   </style>
 </head>
 <body>
@@ -257,6 +363,26 @@
         Unirme al Protocolo
       </a>
     </div>
+
+    <!-- MÓDULOS DINÁMICOS Y FICHA TÉCNICA -->
+    <div class="app-dyn-section">
+      <div id="title-cards-section" class="app-dyn-title"></div>
+      <div id="wrapper-cards" class="app-dyn-grid"></div>
+
+      <div id="title-tech-section" class="app-dyn-title"></div>
+      <div id="wrapper-tech-sheet" class="app-dyn-tech"></div>
+    </div>
+
+    <!-- PIE DE PÁGINA INSTITUCIONAL VISIBLE CON ENLACES .ORG Y .IO -->
+    <footer class="app-global-footer">
+      <p id="footer-rights">© 2026 OMNIH. Todos los derechos reservados.</p>
+      <div class="app-footer-links">
+        <a id="footer-org-link" href="https://omnihistory.org" target="_blank">🌐 Portal (.ORG)</a>
+        <span>|</span>
+        <a id="footer-io-link" href="https://omnihistory.io" target="_blank">⚡ Recursos (.IO)</a>
+      </div>
+    </footer>
+
   </div>
 
   <script>
@@ -429,6 +555,50 @@
         renderGlobe("#map-west", -85);
         renderGlobe("#map-east", 30);
       });
-  </script>
-</body>
-        </html>
+
+    // LÓGICA DE CONEXIÓN CON CONTENIDO.JSON
+    async function loadAppContent() {
+      try {
+        const response = await fetch('./contenido.json');
+        if (!response.ok) return;
+        const data = await response.json();
+
+        if (data.index_page && data.index_page.seccion_tarjetas) {
+          document.getElementById('title-cards-section').innerText = data.index_page.seccion_tarjetas.subtitulo;
+          const cardsWrapper = document.getElementById('wrapper-cards');
+          cardsWrapper.innerHTML = '';
+          
+          data.index_page.seccion_tarjetas.tarjetas.forEach(card => {
+            const cardHtml = `
+              <div class="app-dyn-card">
+                <span class="app-dyn-badge">${card.categoria}</span>
+                <h3 class="app-dyn-card-title">${card.titulo}</h3>
+                <p class="app-dyn-card-desc">${card.descripcion}</p>
+                <a href="${data.footer_global.enlaces.org_url}" class="app-dyn-link">${card.enlace_texto} →</a>
+              </div>
+            `;
+            cardsWrapper.insertAdjacentHTML('beforeend', cardHtml);
+          });
+        }
+
+        if (data.index_page && data.index_page.seccion_ficha_tecnica) {
+          document.getElementById('title-tech-section').innerText = data.index_page.seccion_ficha_tecnica.subtitulo;
+          const techWrapper = document.getElementById('wrapper-tech-sheet');
+          techWrapper.innerHTML = '';
+
+          data.index_page.seccion_ficha_tecnica.metadatos.forEach(item => {
+            const rowHtml = `
+              <div class="app-dyn-tech-row">
+                <span class="app-dyn-tech-key">${item.clave}</span>
+                <span class="app-dyn-tech-val">${item.valor}</span>
+              </div>
+            `;
+            techWrapper.insertAdjacentHTML('beforeend', rowHtml);
+          });
+        }
+
+        if (data.footer_global) {
+          document.getElementById('footer-rights').innerText = data.footer_global.derechos;
+          
+          const orgLink = document.getElementById('footer-org-link');
+          orgLink.href = data.footer
