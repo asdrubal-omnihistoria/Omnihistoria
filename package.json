@@ -4,9 +4,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "echo 'Sin paso de compilación'"
-  },
-  "dependencies": {
-    "@google/genai": "^0.1.1"
+    "build": "echo 'Sin paso de compilacion'"
   }
 }
