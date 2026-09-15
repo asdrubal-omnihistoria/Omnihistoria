@@ -166,6 +166,12 @@
       color: var(--text-dark);
     }
 
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
     .form-group input {
       width: 100%;
       padding: 12px 14px;
@@ -184,10 +190,21 @@
       box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.2);
     }
 
+    .btn-toggle-pwd {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
     .pwd-hint {
       font-size: 0.75rem;
       color: var(--text-muted);
-      margin-top: 4px;
+      margin-top: 5px;
     }
 
     .btn-submit {
@@ -207,7 +224,12 @@
       user-select: none;
     }
 
-    .btn-submit:hover, .btn-submit:active {
+    .btn-submit:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .btn-submit:hover:not(:disabled), .btn-submit:active:not(:disabled) {
       background: linear-gradient(135deg, #bee3f8 0%, #ebf8ff 60%, #ffffff 100%);
       color: var(--active-blue);
       transform: translateY(-1px);
@@ -371,8 +393,11 @@
 
       <div class="form-group">
         <label for="regPassword">Contraseña</label>
-        <input type="password" id="regPassword" placeholder="••••••••" autocomplete="new-password" enterkeyhint="done" required minlength="8">
-        <div class="pwd-hint">La contraseña debe tener al menos 8 caracteres.</div>
+        <div class="input-wrapper">
+          <input type="password" id="regPassword" placeholder="Clave de 8 caracteres" autocomplete="new-password" enterkeyhint="done" required minlength="8">
+          <button type="button" class="btn-toggle-pwd" onclick="togglePasswordVisibility()">Ver</button>
+        </div>
+        <div class="pwd-hint">Formato simple: mínimo 8 caracteres (letras y números).</div>
       </div>
 
       <button type="submit" class="btn-submit" id="btnRegisterSubmit">Registrarme</button>
@@ -450,6 +475,18 @@
     }
   }
 
+  function togglePasswordVisibility() {
+    const pwdInput = document.getElementById('regPassword');
+    const btn = document.querySelector('.btn-toggle-pwd');
+    if (pwdInput.type === 'password') {
+      pwdInput.type = 'text';
+      btn.innerText = 'Ocultar';
+    } else {
+      pwdInput.type = 'password';
+      btn.innerText = 'Ver';
+    }
+  }
+
   async function generateHash(input) {
     const msgUint8 = new TextEncoder().encode(input.toLowerCase().trim());
     const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
@@ -459,19 +496,20 @@
 
   async function procesarRegistro(e) {
     e.preventDefault();
-    const nombre = document.getElementById('regNombre').value;
-    const email = document.getElementById('regEmail').value;
+    const nombre = document.getElementById('regNombre').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
     const password = document.getElementById('regPassword').value;
 
-    // VALIDACIÓN DIRECTA: Exige un mínimo de 8 caracteres
-    if (!password || password.trim().length < 8) {
-      alert("La contraseña debe tener al menos 8 caracteres.");
+    // VALIDACIÓN SIMPLIFICADA: Mínimo 8 caracteres (números y letras)
+    const passwordRegex = /^[a-zA-Z0-9]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      alert("La contraseña debe ser una combinación de al menos 8 letras y/o números, sin símbolos complejos.");
       return;
     }
 
     const btnSubmit = document.getElementById('btnRegisterSubmit');
     btnSubmit.disabled = true;
-    btnSubmit.innerText = "Generando Nodo y Enviando Correo...";
+    btnSubmit.innerText = "Generando Registro y Enviando Correo...";
 
     try {
       const userHash = await generateHash(`${email}_OMNIH_SALT_2026`);
@@ -506,4 +544,4 @@
   }
 </script>
 </body>
-        </html>
+              </html>
