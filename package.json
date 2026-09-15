@@ -1,9 +1,0 @@
-{
-  "name": "omnih-protocolo",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "build": "echo 'Sin paso de compilacion'"
-  }
-}
