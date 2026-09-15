@@ -1,0 +1,28 @@
+{
+  "name": "omnih-protocolo",
+  "version": "1.0.0",
+  "description": "OMNIH - Protocolo de Preservación e Interfaz de Usuario con Integración Google Gemini API",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve .",
+    "build": "echo 'Proyecto estático sin compilación previa preparado para Vercel'"
+  },
+  "keywords": [
+    "omnih",
+    "preservacion",
+    "blockchain",
+    "gemini-api",
+    "pwa"
+  ],
+  "author": "Asdrúbal González Hernández",
+  "license": "MIT",
+  "dependencies": {
+    "@google/genai": "^0.1.1"
+  },
+  "devDependencies": {
+    "serve": "^14.2.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
