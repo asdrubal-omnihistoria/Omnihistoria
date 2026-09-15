@@ -39,7 +39,7 @@
       max-width: 480px;
       border-radius: 24px;
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-      overflow: hidden;
+      overflow: visible;
       border: 1px solid var(--border-color);
       position: relative;
       padding: 1.5rem 1.25rem;
@@ -55,24 +55,25 @@
     .brand-logo-link {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       text-decoration: none;
       touch-action: manipulation;
     }
 
+    /* RESTITUIR HEMISFERIOS: Espaciado adecuado y sin cortes */
     .dna-box {
-      width: 20px;
-      height: 40px;
-      aspect-ratio: 1 / 2;
+      width: 32px;
+      height: 44px;
       display: flex;
       justify-content: center;
       align-items: center;
       flex-shrink: 0;
+      overflow: visible;
     }
 
     .dna-icon {
-      width: 20px;
-      height: 40px;
+      width: 32px;
+      height: 44px;
       transform: rotate(45deg);
       transform-origin: center;
       overflow: visible;
@@ -274,6 +275,7 @@
       justify-content: center;
       align-items: center;
       z-index: 10;
+      border-radius: 24px;
     }
 
     .modal-icon {
@@ -323,7 +325,7 @@
   <div class="top-navbar">
     <a href="preservador-provisorio.html" class="brand-logo-link" title="Ir al Preservador Provisorio">
       <div class="dna-box">
-        <svg viewBox="0 0 120 240" width="20" height="40" preserveAspectRatio="xMidYMid meet" class="dna-icon" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 120 240" width="32" height="44" preserveAspectRatio="xMidYMid meet" class="dna-icon" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="hebraFondo" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stop-color="#b03a8a" />
@@ -340,6 +342,7 @@
             </linearGradient>
           </defs>
 
+          <!-- Peldaños centrales -->
           <g stroke-width="4.5" stroke-linecap="round" opacity="0.85">
             <line x1="34" y1="35" x2="86" y2="35" stroke="#b03a8a" />
             <line x1="34" y1="65" x2="86" y2="65" stroke="#704fa0" />
@@ -350,9 +353,11 @@
             <line x1="34" y1="215" x2="86" y2="215" stroke="#e1c662" />
           </g>
           
+          <!-- Hemisferio 1 -->
           <path d="M 30,15 C 30,50 90,50 90,85 C 90,120 30,120 30,155 C 30,190 90,190 90,225" 
                 fill="none" stroke="url(#hebraFondo)" stroke-width="11" stroke-linecap="round" />
           
+          <!-- Hemisferio 2 -->
           <path d="M 90,15 C 90,50 30,50 30,85 C 30,120 90,120 90,155 C 90,190 30,190 30,225" 
                 fill="none" stroke="url(#hebraFrente)" stroke-width="11" stroke-linecap="round" />
         </svg>
@@ -394,10 +399,10 @@
       <div class="form-group">
         <label for="regPassword">Contraseña</label>
         <div class="input-wrapper">
-          <input type="password" id="regPassword" placeholder="Clave de 8 caracteres" autocomplete="new-password" enterkeyhint="done" required minlength="8">
+          <input type="password" id="regPassword" placeholder="Mínimo 8 caracteres" autocomplete="new-password" enterkeyhint="done" required minlength="8">
           <button type="button" class="btn-toggle-pwd" onclick="togglePasswordVisibility()">Ver</button>
         </div>
-        <div class="pwd-hint">Formato simple: mínimo 8 caracteres (letras y números).</div>
+        <div class="pwd-hint">Acepta cualquier combinación de mínimo 8 caracteres (puntos, letras, números, etc.).</div>
       </div>
 
       <button type="submit" class="btn-submit" id="btnRegisterSubmit">Registrarme</button>
@@ -500,10 +505,9 @@
     const email = document.getElementById('regEmail').value.trim();
     const password = document.getElementById('regPassword').value;
 
-    // VALIDACIÓN SIMPLIFICADA: Mínimo 8 caracteres (números y letras)
-    const passwordRegex = /^[a-zA-Z0-9]{8,}$/;
-    if (!passwordRegex.test(password)) {
-      alert("La contraseña debe ser una combinación de al menos 8 letras y/o números, sin símbolos complejos.");
+    // VALIDACIÓN FLEXIBLE: Acepta cualquier contraseña de al menos 8 caracteres (puntos, guiones, letras, números, etc.)
+    if (!password || password.length < 8) {
+      alert("La contraseña debe tener al menos 8 caracteres.");
       return;
     }
 
@@ -513,6 +517,13 @@
 
     try {
       const userHash = await generateHash(`${email}_OMNIH_SALT_2026`);
+      
+      // ALMACENAMIENTO PERSISTENTE DE CREDENCIALES (localStorage)
+      localStorage.setItem('omnih_registered_email', email.toLowerCase());
+      localStorage.setItem('omnih_registered_pass', password);
+      localStorage.setItem('omnih_user_name', nombre);
+      
+      // Datos de sesión activa
       sessionStorage.setItem('omnih_active_user', userHash);
       sessionStorage.setItem('omnih_user_email', email);
       sessionStorage.setItem('omnih_user_name', nombre);
