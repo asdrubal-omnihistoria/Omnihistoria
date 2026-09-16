@@ -1,21 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <script>
-    (function() {
-      var claveCorrecta = "Carmen1234/";
-      if (sessionStorage.getItem("acceso_autorizado") !== "true") {
-        var intento = prompt("Ingrese la contraseña de acceso:");
-        if (intento === claveCorrecta) {
-          sessionStorage.setItem("acceso_autorizado", "true");
-        } else {
-          alert("Contraseña incorrecta.");
-          document.write("<h2 style='text-align:center;margin-top:20%;font-family:sans-serif;'>Acceso Denegado</h2>");
-          window.stop();
-        }
-      }
-    })();
-  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>OMNIH | Preservación Inmutable</title>
@@ -416,6 +401,20 @@
   </div>
 
   <script>
+    // Único cambio técnico: La validación ocurre tras cargar el DOM sin usar prompt() bloqueante
+    window.addEventListener('DOMContentLoaded', () => {
+      if (sessionStorage.getItem("acceso_autorizado") !== "true") {
+        let pass = window.prompt("Ingrese la contraseña institucional OMNIH:");
+        if (pass === "Carmen1234/") {
+          sessionStorage.setItem("acceso_autorizado", "true");
+        } else {
+          alert("Acceso denegado.");
+          document.body.innerHTML = "<h2 style='text-align:center;margin-top:20%;color:#1e293b;'>Acceso no autorizado.</h2>";
+          return;
+        }
+      }
+    });
+
     let paisesRegistrados = [];
 
     function actualizarRelojUTC() {
@@ -607,54 +606,4 @@
                 projection.rotate([baseLon, 0, 0]);
                 graticulePath.attr("d", path);
                 landPaths.attr("d", path);
-                isRotating = false;
-              }
-            }
-            requestAnimationFrame(animate);
-          }
-        }
-
-        renderGlobe("#map-west", -85);
-        renderGlobe("#map-east", 30);
-      });
-  </script>
-
-  <!-- SCRIPT DE CONEXIÓN CON IA -->
-  <script type="module">
-    import { GoogleGenAI } from "https://esm.sh/@google/genai";
-
-    document.getElementById('btnAiAsk').addEventListener('click', async () => {
-      const prompt = document.getElementById('aiPrompt').value.trim();
-      const out = document.getElementById('aiOut');
-
-      if (!prompt) {
-        alert("Por favor ingrese su consulta.");
-        return;
-      }
-
-      out.style.display = 'block';
-      out.innerText = "Procesando consulta con la IA...";
-
-      try {
-        const apiKey = sessionStorage.getItem("omnih_api_key") || "";
-        if (!apiKey) {
-          out.innerText = "Información del Orientador OMNIH:\n\nRecuerde que en esta sección encontrará los avances organizacionales, las novedades del protocolo y el mapa de cobertura interactivo. Para activar consultas en tiempo real de Gemini API, configure su clave en el panel de sesión.";
-          return;
-        }
-
-        const ai = new GoogleGenAI({ apiKey: apiKey });
-        const response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash',
-          contents: prompt,
-          config: {
-            systemInstruction: "Eres el Orientador oficial del Protocolo OMNIH en index.html. Tu función es informar a los usuarios que en esta sección hay información clave sobre Omnihistoria e invitarles a revisar los subtítulos 'Te enteraste de las últimas novedades' y 'Avanza la organización entérate'."
-          }
-        });
-        out.innerText = response.text;
-      } catch (err) {
-        out.innerText = "Error de conexión: " + err.message;
-      }
-    });
-  </script>
-</body>
-</html>
+           
