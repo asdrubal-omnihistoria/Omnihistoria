@@ -84,6 +84,18 @@
       opacity: 0.85;
     }
 
+    .privacy-notice {
+      background: #f8fafc;
+      border: 1px solid var(--accent-gold);
+      border-radius: 10px;
+      padding: 0.6rem 0.8rem;
+      font-size: 0.7rem;
+      color: #334155;
+      margin-bottom: 1rem;
+      text-align: center;
+      line-height: 1.35;
+    }
+
     .hud-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
     .hud-badge { background: #f1f5f9; border: 1px solid #e2e8f0; color: var(--text-muted); font-size: 0.65rem; font-weight: 700; padding: 0.25rem 0.5rem; border-radius: 12px; }
     .status-ok { color: var(--accent-green); }
@@ -188,89 +200,88 @@
       opacity: 0.75;
     }
 
-    /* ESTILOS DINÁMICOS Y PIE DE PÁGINA VISIBLE */
-    .app-dyn-section {
+    .blog-section {
       margin-top: 1.25rem;
       padding-top: 1rem;
       border-top: 1px dashed var(--border-color);
     }
-    .app-dyn-title {
-      font-size: 0.75rem;
-      font-weight: 800;
-      color: var(--text-muted);
+    .blog-title {
+      font-size: 0.85rem;
+      font-weight: 900;
+      color: var(--accent-gold);
       letter-spacing: 0.5px;
       text-transform: uppercase;
       margin-bottom: 0.75rem;
     }
-    .app-dyn-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      margin-bottom: 1.25rem;
-    }
-    .app-dyn-card {
+    .blog-card {
       background: #f8fafc;
       border: 1px solid var(--border-color);
       border-radius: 12px;
       padding: 0.85rem;
-      text-align: left;
+      margin-bottom: 0.75rem;
     }
-    .app-dyn-badge {
-      display: inline-block;
-      background: #e2e8f0;
-      color: var(--text-dark);
-      font-size: 0.6rem;
-      font-weight: 700;
-      padding: 0.2rem 0.4rem;
-      border-radius: 4px;
-      text-transform: uppercase;
-      margin-bottom: 0.4rem;
-    }
-    .app-dyn-card-title {
+    .blog-card-title {
       font-size: 0.85rem;
       font-weight: 800;
       color: var(--text-dark);
       margin-bottom: 0.25rem;
     }
-    .app-dyn-card-desc {
+    .blog-card-desc {
       font-size: 0.75rem;
       color: var(--text-muted);
       line-height: 1.35;
-      margin-bottom: 0.5rem;
     }
-    .app-dyn-link {
-      color: var(--accent-gold);
-      font-size: 0.72rem;
-      font-weight: 800;
-      text-decoration: none;
-    }
-    .app-dyn-tech {
-      background: #f8fafc;
-      border: 1px solid var(--border-color);
+
+    .ai-orientador-box {
+      background: #0f172a;
+      border: 1px solid var(--accent-gold);
       border-radius: 12px;
-      padding: 0.75rem;
-      margin-bottom: 1.25rem;
+      padding: 1rem;
+      margin-top: 1.25rem;
+      color: #fff;
     }
-    .app-dyn-tech-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.4rem 0;
-      border-bottom: 1px solid var(--border-color);
-      font-size: 0.72rem;
-    }
-    .app-dyn-tech-row:last-child {
-      border-bottom: none;
-    }
-    .app-dyn-tech-key {
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-    .app-dyn-tech-val {
-      color: var(--text-dark);
+    .ai-title {
+      font-size: 0.8rem;
       font-weight: 800;
+      color: var(--accent-gold);
+      margin-bottom: 0.5rem;
+      text-align: center;
     }
-    
-    /* ESTILOS DEL PIE DE PÁGINA INSTITUCIONAL VISIBLE */
+    .ai-input {
+      width: 100%;
+      height: 60px;
+      background: #1e293b;
+      border: 1px solid #475569;
+      border-radius: 6px;
+      color: #fff;
+      padding: 8px;
+      font-size: 0.75rem;
+      resize: none;
+      box-sizing: border-box;
+      margin-bottom: 8px;
+    }
+    .ai-btn {
+      width: 100%;
+      padding: 8px;
+      background: var(--accent-gold);
+      border: none;
+      border-radius: 6px;
+      color: #000;
+      font-weight: bold;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+    .ai-response {
+      margin-top: 8px;
+      padding: 8px;
+      background: #1e293b;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      color: #cbd5e1;
+      display: none;
+      white-space: pre-wrap;
+    }
+
     .app-global-footer {
       border-top: 1px solid var(--border-color);
       padding-top: 1rem;
@@ -299,10 +310,15 @@
 
   <div class="app-frame">
     <div class="top-navbar">
-      <a href="indice.html" style="touch-action: manipulation;">
+      <a href="index.html" style="touch-action: manipulation;">
         <img src="Screenshot_20260902-152157_1.jpg" alt="OMNIH" class="brand-logo-img">
       </a>
       <a href="login.html" class="btn-login-top">Iniciar sesión</a>
+    </div>
+
+    <!-- DECLARACIÓN DE SOBERANÍA DE DATOS -->
+    <div class="privacy-notice">
+      🔒 <strong>DECLARACIÓN DE PRIVACIDAD:</strong> En el Protocolo OMNIH la soberanía es absoluta. No compartimos ni comercializamos los datos de nuestros preservadores bajo ningún concepto.
     </div>
 
     <div class="hud-header">
@@ -326,14 +342,14 @@
 
     <div class="info-card">
       <h2 class="card-title">
-        COBERTURA GLOBAL OMNHISTORIA:<br>
+        COBERTURA GLOBAL OMNIHISTORIA:<br>
         <span id="num-paises" class="counter-number">0</span> PAÍSES INCORPORADOS
       </h2>
       <p class="card-sub" id="lista-paises">Esperando señales de registro...</p>
 
       <div class="manifesto">
         <strong>MANIFIESTO PROVISIONAL</strong><br>
-        OMNIH es un protocolo que será descentralizado, para resguardo de la memoria digital y de interés Omnihistorico, de forma inmutable, conectando teselas (personas) georreferenciadas, garantizando todos sus procesos de preservación integral, de la data compilada, con un fondo Mutualizado de preservación y migración tecnológica.
+        OMNIH es un protocolo descentralizado para el resguardo inmutable de la memoria digital e histórica, conectando teselas georreferenciadas con un fondo mutualizado de preservación y migración tecnológica.
       </div>
 
       <div class="metrics-grid">
@@ -364,16 +380,30 @@
       </a>
     </div>
 
-    <!-- MÓDULOS DINÁMICOS Y FICHA TÉCNICA -->
-    <div class="app-dyn-section">
-      <div id="title-cards-section" class="app-dyn-title"></div>
-      <div id="wrapper-cards" class="app-dyn-grid"></div>
+    <!-- SECCIONES TIPO BLOG -->
+    <div class="blog-section">
+      <div class="blog-title">Te enteraste de las últimas novedades</div>
+      <div class="blog-card">
+        <div class="blog-card-title">Despliegue del Motor Georreferenciado</div>
+        <div class="blog-card-desc">Se ha integrado la infraestructura de mapas globales interactivos para el registro activo de preservadores en ambos hemisferios.</div>
+      </div>
 
-      <div id="title-tech-section" class="app-dyn-title"></div>
-      <div id="wrapper-tech-sheet" class="app-dyn-tech"></div>
+      <div class="blog-title" style="margin-top: 1rem;">Avanza la organización entérate</div>
+      <div class="blog-card">
+        <div class="blog-card-title">Consolidación del Fondo Mutual de Preservación</div>
+        <div class="blog-card-desc">El esquema de arquitectura descentralizada asegura la migración tecnológica continua frente a la obsolescencia digital.</div>
+      </div>
     </div>
 
-    <!-- PIE DE PÁGINA INSTITUCIONAL VISIBLE CON ENLACES .ORG Y .IO -->
+    <!-- ORIENTADOR IA -->
+    <div class="ai-orientador-box">
+      <div class="ai-title">ORIENTADOR INSTITUCIONAL IA</div>
+      <textarea id="aiPrompt" class="ai-input" placeholder="Consulte sobre novedades o la estructura del protocolo..."></textarea>
+      <button id="btnAiAsk" class="ai-btn">Consultar al Orientador</button>
+      <div id="aiOut" class="ai-response"></div>
+    </div>
+
+    <!-- PIE DE PÁGINA INSTITUCIONAL -->
     <footer class="app-global-footer">
       <p id="footer-rights">© 2026 OMNIH. Todos los derechos reservados.</p>
       <div class="app-footer-links">
@@ -516,10 +546,13 @@
         function renderGlobe(containerId, centerLon) {
           const width = 240, height = 240;
           const radius = 118;
+          let currentRotate = [-centerLon, 0, 0];
+          let isRotating = false;
+
           const projection = d3.geoOrthographic()
             .scale(radius)
             .translate([width / 2, height / 2])
-            .rotate([-centerLon, 0, 0]);
+            .rotate(currentRotate);
 
           const path = d3.geoPath().projection(projection);
           const svg = d3.select(containerId).append("svg")
@@ -531,12 +564,12 @@
             .attr("cx", width/2).attr("cy", height/2).attr("r", radius)
             .attr("class", "sphere");
 
-          svg.append("path")
+          const graticulePath = svg.append("path")
             .datum(d3.geoGraticule()())
             .attr("class", "graticule")
             .attr("d", path);
 
-          svg.selectAll("path.land")
+          const landPaths = svg.selectAll("path.land")
             .data(countries.features)
             .enter().append("path")
             .attr("class", d => {
@@ -549,56 +582,79 @@
               if (event.type === 'touchend') event.preventDefault();
               const nombrePais = d.properties ? d.properties.name : `ISO ${d.id}`;
               registrarPais(d.id, nombrePais);
+              rotarTresSegundos();
             });
+
+          function rotarTresSegundos() {
+            if (isRotating) return;
+            isRotating = true;
+            const startTime = performance.now();
+            const duration = 3000;
+            const baseLon = -centerLon;
+
+            function animate(now) {
+              const elapsed = now - startTime;
+              const progress = Math.min(elapsed / duration, 1);
+              const offset = Math.sin(progress * Math.PI) * 180;
+              
+              projection.rotate([baseLon + offset, 0, 0]);
+              graticulePath.attr("d", path);
+              landPaths.attr("d", path);
+
+              if (progress < 1) {
+                requestAnimationFrame(animate);
+              } else {
+                projection.rotate([baseLon, 0, 0]);
+                graticulePath.attr("d", path);
+                landPaths.attr("d", path);
+                isRotating = false;
+              }
+            }
+            requestAnimationFrame(animate);
+          }
         }
 
         renderGlobe("#map-west", -85);
         renderGlobe("#map-east", 30);
       });
+  </script>
 
-    // LÓGICA DE CONEXIÓN CON CONTENIDO.JSON
-    async function loadAppContent() {
+  <!-- SCRIPT DE CONEXIÓN CON IA -->
+  <script type="module">
+    import { GoogleGenAI } from "https://esm.sh/@google/genai";
+
+    document.getElementById('btnAiAsk').addEventListener('click', async () => {
+      const prompt = document.getElementById('aiPrompt').value.trim();
+      const out = document.getElementById('aiOut');
+
+      if (!prompt) {
+        alert("Por favor ingrese su consulta.");
+        return;
+      }
+
+      out.style.display = 'block';
+      out.innerText = "Procesando consulta con la IA...";
+
       try {
-        const response = await fetch('./contenido.json');
-        if (!response.ok) return;
-        const data = await response.json();
-
-        if (data.index_page && data.index_page.seccion_tarjetas) {
-          document.getElementById('title-cards-section').innerText = data.index_page.seccion_tarjetas.subtitulo;
-          const cardsWrapper = document.getElementById('wrapper-cards');
-          cardsWrapper.innerHTML = '';
-          
-          data.index_page.seccion_tarjetas.tarjetas.forEach(card => {
-            const cardHtml = `
-              <div class="app-dyn-card">
-                <span class="app-dyn-badge">${card.categoria}</span>
-                <h3 class="app-dyn-card-title">${card.titulo}</h3>
-                <p class="app-dyn-card-desc">${card.descripcion}</p>
-                <a href="${data.footer_global.enlaces.org_url}" class="app-dyn-link">${card.enlace_texto} →</a>
-              </div>
-            `;
-            cardsWrapper.insertAdjacentHTML('beforeend', cardHtml);
-          });
+        const apiKey = sessionStorage.getItem("omnih_api_key") || "";
+        if (!apiKey) {
+          out.innerText = "Información del Orientador OMNIH:\n\nRecuerde que en esta sección encontrará los avances organizacionales, las novedades del protocolo y el mapa de cobertura interactivo. Para activar consultas en tiempo real de Gemini API, configure su clave en el panel de sesión.";
+          return;
         }
 
-        if (data.index_page && data.index_page.seccion_ficha_tecnica) {
-          document.getElementById('title-tech-section').innerText = data.index_page.seccion_ficha_tecnica.subtitulo;
-          const techWrapper = document.getElementById('wrapper-tech-sheet');
-          techWrapper.innerHTML = '';
-
-          data.index_page.seccion_ficha_tecnica.metadatos.forEach(item => {
-            const rowHtml = `
-              <div class="app-dyn-tech-row">
-                <span class="app-dyn-tech-key">${item.clave}</span>
-                <span class="app-dyn-tech-val">${item.valor}</span>
-              </div>
-            `;
-            techWrapper.insertAdjacentHTML('beforeend', rowHtml);
-          });
-        }
-
-        if (data.footer_global) {
-          document.getElementById('footer-rights').innerText = data.footer_global.derechos;
-          
-          const orgLink = document.getElementById('footer-org-link');
-          orgLink.href = data.footer
+        const ai = new GoogleGenAI({ apiKey: apiKey });
+        const response = await ai.models.generateContent({
+          model: 'gemini-2.5-flash',
+          contents: prompt,
+          config: {
+            systemInstruction: "Eres el Orientador oficial del Protocolo OMNIH en index.html. Tu función es informar a los usuarios que en esta sección hay información clave sobre Omnihistoria e invitarles a revisar los subtítulos 'Te enteraste de las últimas novedades' y 'Avanza la organización entérate'."
+          }
+        });
+        out.innerText = response.text;
+      } catch (err) {
+        out.innerText = "Error de conexión: " + err.message;
+      }
+    });
+  </script>
+</body>
+</html>
