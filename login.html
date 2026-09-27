@@ -13,6 +13,7 @@
       --accent-gold: #c5a059;
       --border-color: #e2e8f0;
       --active-blue: #3182ce;
+      --error-red: #e53e3e;
     }
 
     * {
@@ -39,34 +40,28 @@
       max-width: 480px;
       border-radius: 24px;
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-      overflow: hidden;
       border: 1px solid var(--border-color);
       position: relative;
       padding: 1.5rem 1.25rem;
     }
 
-    /* BARRA SUPERIOR: SOLO ELEMENTO IDENTITARIO */
     .top-navbar {
       display: flex;
-      justify-content: flex-start;
+      justify-content: space-between;
       align-items: center;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.5rem;
     }
 
-    /* CONTENEDOR MAESTRO CENTRALIZADO DEL LOGO (Arriba y a la Izquierda) */
     .brand-logo-link {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       text-decoration: none;
-      touch-action: manipulation;
     }
 
-    /* CORRECCIÓN TÉCNICA: Bloqueo explícito en px y aspect-ratio */
     .dna-box {
-      width: 20px;
-      height: 40px;
-      aspect-ratio: 1 / 2;
+      width: 32px;
+      height: 44px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -74,11 +69,9 @@
     }
 
     .dna-icon {
-      width: 20px;
-      height: 40px;
+      width: 32px;
+      height: 44px;
       transform: rotate(45deg);
-      transform-origin: center;
-      overflow: visible;
       display: block;
     }
 
@@ -89,11 +82,26 @@
       background: linear-gradient(180deg, #fef08a 0%, #eab308 35%, #ca8a04 70%, #854d0e 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      font-family: 'Arial', sans-serif;
       line-height: 1;
     }
 
-    /* SUB-LÍNEA: PROTOCOLO - INICIAR SESIÓN */
+    .btn-top-register {
+      border: 1px solid var(--border-color);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-top-register:hover {
+      border-color: var(--active-blue);
+      color: var(--active-blue);
+      background-color: #f8fafc;
+    }
+
     .protocol-subbar {
       margin-bottom: 1.25rem;
       text-align: left;
@@ -104,10 +112,6 @@
       font-weight: 700;
       color: var(--accent-gold);
       letter-spacing: 0.3px;
-    }
-
-    .form-body {
-      padding: 0;
     }
 
     .form-group {
@@ -122,6 +126,12 @@
       color: var(--text-dark);
     }
 
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
     .form-group input {
       width: 100%;
       padding: 12px 14px;
@@ -132,12 +142,22 @@
       outline: none;
       background: #ffffff;
       transition: border-color 0.2s, box-shadow 0.2s;
-      touch-action: manipulation;
     }
 
     .form-group input:focus {
       border-color: #63b3ed;
       box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.2);
+    }
+
+    .btn-toggle-pwd {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
     }
 
     .btn-submit {
@@ -153,26 +173,27 @@
       transition: transform 0.15s ease, box-shadow 0.2s ease, background-color 0.2s ease;
       margin-top: 10px;
       box-shadow: 0 4px 12px rgba(144, 205, 244, 0.35);
-      touch-action: manipulation;
-      user-select: none;
     }
 
-    .btn-submit:hover, .btn-submit:active {
+    .btn-submit:hover:not(:disabled) {
       background: linear-gradient(135deg, #bee3f8 0%, #ebf8ff 60%, #ffffff 100%);
       color: var(--active-blue);
       transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(144, 205, 244, 0.5);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     .quote-box {
       background-color: #f8fafc;
       border-left: 4px solid var(--accent-gold);
-      padding: 14px 16px;
+      padding: 12px 14px;
       margin-top: 24px;
       border-radius: 0 8px 8px 0;
-      font-size: 0.85rem;
-      color: var(--text-dark);
-      line-height: 1.5;
+      font-size: 0.8rem;
+      line-height: 1.4;
     }
 
     .quote-text {
@@ -182,8 +203,7 @@
 
     .quote-source {
       display: block;
-      margin-top: 8px;
-      font-size: 0.78rem;
+      margin-top: 6px;
       font-weight: 700;
       color: var(--accent-gold);
     }
@@ -193,12 +213,10 @@
 
 <div class="container">
   
-  <!-- BARRA SUPERIOR: SOLO ELEMENTO IDENTITARIO -->
-  <div class="top-navbar">
-    <a href="index.html" class="brand-logo-link" title="Ir al Inicio">
+  <header class="top-navbar">
+    <a href="/" class="brand-logo-link" title="Ir a la Raíz">
       <div class="dna-box">
-        <!-- SVG blindado con ancho/alto explícitos y preserveAspectRatio -->
-        <svg viewBox="0 0 120 240" width="20" height="40" preserveAspectRatio="xMidYMid meet" class="dna-icon" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 120 240" width="32" height="44" preserveAspectRatio="xMidYMid meet" class="dna-icon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <defs>
             <linearGradient id="hebraFondo" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stop-color="#b03a8a" />
@@ -206,117 +224,99 @@
               <stop offset="70%" stop-color="#3b7cb3" />
               <stop offset="100%" stop-color="#4aa47a" />
             </linearGradient>
-
             <linearGradient id="hebraFrente" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stop-color="#d95438" />
-              <stop offset="40%" stop-color="#f0a441" />
-              <stop offset="80%" stop-color="#e1c662" />
-              <stop offset="100%" stop-color="#cbaf4b" />
+              <stop offset="100%" stop-color="#eab308" />
             </linearGradient>
           </defs>
-
-          <!-- Peldaños conectores -->
-          <g stroke-width="4.5" stroke-linecap="round" opacity="0.85">
-            <line x1="34" y1="35" x2="86" y2="35" stroke="#b03a8a" />
-            <line x1="34" y1="65" x2="86" y2="65" stroke="#704fa0" />
-            <line x1="34" y1="95" x2="86" y2="95" stroke="#3b7cb3" />
-            <line x1="34" y1="125" x2="86" y2="125" stroke="#4aa47a" />
-            <line x1="34" y1="155" x2="86" y2="155" stroke="#d95438" />
-            <line x1="34" y1="185" x2="86" y2="185" stroke="#f0a441" />
-            <line x1="34" y1="215" x2="86" y2="215" stroke="#e1c662" />
-          </g>
-          
-          <!-- Hebra 1 -->
-          <path d="M 30,15 C 30,50 90,50 90,85 C 90,120 30,120 30,155 C 30,190 90,190 90,225" 
-                fill="none" stroke="url(#hebraFondo)" stroke-width="11" stroke-linecap="round" />
-          
-          <!-- Hebra 2 -->
-          <path d="M 90,15 C 90,50 30,50 30,85 C 30,120 90,120 90,155 C 90,190 30,190 30,225" 
-                fill="none" stroke="url(#hebraFrente)" stroke-width="11" stroke-linecap="round" />
+          <path d="M30,20 Q90,70 30,120 T30,220" fill="none" stroke="url(#hebraFondo)" stroke-width="16" stroke-linecap="round" />
+          <path d="M90,20 Q30,70 90,120 T90,220" fill="none" stroke="url(#hebraFrente)" stroke-width="16" stroke-linecap="round" />
         </svg>
       </div>
-      <div class="text-omnih">OMNIH</div>
+      <span class="text-omnih">OMNIH</span>
     </a>
-  </div>
+    <a href="/registro" class="btn-top-register">REGISTRARSE</a>
+  </header>
 
-  <!-- LÍNEA INFERIOR: PROTOCOLO - INICIAR SESIÓN -->
   <div class="protocol-subbar">
-    <span class="header-protocol-text">Protocolo - Iniciar Sesión</span>
+    <span class="header-protocol-text">PROTOCOLO DE INICIO DE SESIÓN</span>
   </div>
 
-  <div class="form-body">
-    
-    <!-- FORMULARIO DE INICIO DE SESIÓN -->
-    <form id="formLogin" onsubmit="procesarInicioSesion(event)">
-
+  <main class="form-body">
+    <form id="formLogin" novalidate>
       <div class="form-group">
         <label for="loginEmail">Correo Electrónico</label>
-        <input type="email" id="loginEmail" placeholder="correo@ejemplo.com" autocomplete="email" enterkeyhint="next" required>
+        <input type="email" id="loginEmail" name="email" placeholder="correo@ejemplo.com" autocomplete="email" required>
       </div>
 
       <div class="form-group">
         <label for="loginPassword">Contraseña</label>
-        <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" enterkeyhint="done" required>
+        <div class="input-wrapper">
+          <input type="password" id="loginPassword" name="password" placeholder="••••••••" autocomplete="current-password" required>
+          <button type="button" id="btnTogglePassword" class="btn-toggle-pwd" aria-label="Mostrar u ocultar contraseña">Ver</button>
+        </div>
       </div>
 
-      <button type="submit" class="btn-submit" id="btnLoginSubmit">Iniciar Sesión</button>
+      <button type="submit" class="btn-submit" id="btnLoginSubmit">INICIAR SESIÓN</button>
     </form>
+  </main>
 
-    <!-- Frase Institucional de Bienvenida -->
-    <div class="quote-box">
-      <p class="quote-text">"Bienvenido, sumando para compilar la historia del futuro."</p>
-      <span class="quote-source">Fuente: Comunidad de la Omnihistoria. omnihistoria.io</span>
-    </div>
-
-  </div>
+  <aside class="quote-box">
+    <p class="quote-text">"Bienvenido, sumando para compilar la historia del futuro."</p>
+    <span class="quote-source">— Comunidad de la Omnihistoria</span>
+  </aside>
 
 </div>
 
 <script>
-  async function generateHash(input) {
-    const msgUint8 = new TextEncoder().encode(input.toLowerCase().trim());
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  }
-
-  async function procesarInicioSesion(e) {
-    e.preventDefault();
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-
-    if (!email || !password) {
-      alert("Por favor ingresa tu correo y contraseña.");
-      return;
-    }
-
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('formLogin');
+    const emailInput = document.getElementById('loginEmail');
+    const pwdInput = document.getElementById('loginPassword');
     const btnSubmit = document.getElementById('btnLoginSubmit');
-    btnSubmit.disabled = true;
-    btnSubmit.innerText = "Autenticando...";
+    const togglePwdBtn = document.getElementById('btnTogglePassword');
 
-    try {
-      const userHash = await generateHash(`${email}_OMNIH_SALT_2026`);
-      sessionStorage.setItem('omnih_active_user', userHash);
-      sessionStorage.setItem('omnih_user_email', email);
-      sessionStorage.setItem('omnih_first_time', 'false');
-
-      setTimeout(() => {
-        window.location.href = 'interfaz-usuario.html';
-      }, 600);
-    } catch (error) {
-      console.error("Error al iniciar sesión:", error);
-      alert("Ocurrió un error al intentar autenticar.");
-      btnSubmit.disabled = false;
-      btnSubmit.innerText = "Iniciar Sesión";
-    }
-  }
-
-  /* Ajuste de pantalla al desplegar el teclado táctil */
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', () => {
-      document.body.style.minHeight = `${window.visualViewport.height}px`;
+    togglePwdBtn.addEventListener('click', () => {
+      const isPwd = pwdInput.type === 'password';
+      pwdInput.type = isPwd ? 'text' : 'password';
+      togglePwdBtn.textContent = isPwd ? 'Ocultar' : 'Ver';
     });
-  }
+
+    async function generateHash(input) {
+      const msgUint8 = new TextEncoder().encode(input.toLowerCase().trim());
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = 'AUTENTICANDO...';
+
+      try {
+        const email = emailInput.value.trim();
+        const userHash = await generateHash(`${email}_OMNIH_SALT_2026`);
+
+        sessionStorage.setItem('omnih_active_user', userHash);
+        sessionStorage.setItem('omnih_user_email', email);
+        sessionStorage.setItem('omnih_auth_time', Date.now().toString());
+
+        window.location.href = '/central';
+      } catch (error) {
+        console.error('Error en autenticación:', error);
+        alert('Ocurrió un error al procesar el inicio de sesión.');
+        btnSubmit.disabled = false;
+        btnSubmit.textContent = 'INICIAR SESIÓN';
+      }
+    });
+  });
 </script>
 </body>
-  </html>
+        </html>
