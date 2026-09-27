@@ -2,45 +2,48 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>OMNIH - Cápsula del Tiempo</title>
   <style>
     :root {
       --bg-color: #f8fafc;
       --card-bg: #ffffff;
-      --text-main: #1e293b;
+      --text-main: #0f172a;
       --text-muted: #64748b;
-      --brand-purple: #4c1d95;
-      --brand-gold: #b45309;
+      --accent-gold: #c5a059;
+      --accent-blue: #0284c7;
+      --accent-blue-light: #e0f2fe;
       --border-color: #e2e8f0;
-      --shadow: 0 2px 4px rgba(0,0,0,0.04);
+      --success-green: #15803d;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: system-ui, -apple-system, sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      font-family: system-ui, -apple-system, sans-serif;
       background-color: var(--bg-color);
       color: var(--text-main);
       display: flex;
       flex-direction: column;
-      height: 100dvh;
-      overflow: hidden;
+      min-height: 100dvh;
     }
 
     .app-header {
       background: var(--card-bg);
       border-bottom: 1px solid var(--border-color);
-      padding: 10px 16px;
+      padding: 10px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      z-index: 20;
     }
 
     .header-left {
@@ -49,23 +52,34 @@
     }
 
     .brand-identity {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      text-decoration: none !important;
-      cursor: pointer;
-      touch-action: manipulation;
+      gap: 10px;
+      text-decoration: none;
     }
 
-    /* Tamaño fijo para prevenir desbordamientos */
-    .brand-logo-icon {
+    .dna-box {
       width: 28px;
-      height: 28px;
-      max-width: 28px;
-      max-height: 28px;
-      flex-shrink: 0;
-      fill: none;
-      stroke: var(--brand-purple);
-      stroke-width: 2;
+      height: 38px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .dna-icon {
+      width: 28px;
+      height: 38px;
+      transform: rotate(45deg);
+      display: block;
+    }
+
+    .text-omnih {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      background: linear-gradient(180deg, #fef08a 0%, #eab308 35%, #ca8a04 70%, #854d0e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .header-right {
@@ -74,126 +88,95 @@
       gap: 10px;
     }
 
-    .icon-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 4px;
-      border-radius: 6px;
-      transition: background-color 0.2s;
-      touch-action: manipulation;
-      user-select: none;
-    }
-
-    .icon-btn:hover {
-      background-color: #f1f5f9;
-    }
-
-    .btn-action-sm {
-      background: #f1f5f9;
+    .btn-nav-taller {
+      background: var(--card-bg);
       border: 1px solid var(--border-color);
-      color: var(--brand-gold);
-      font-weight: 600;
-      font-size: 0.78rem;
-      padding: 6px 12px;
+      color: var(--accent-blue);
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 6px 14px;
       border-radius: 8px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      touch-action: manipulation;
-      user-select: none;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-nav-taller:hover {
+      background: var(--accent-blue-light);
     }
 
     .main-container {
       flex: 1;
-      overflow-y: auto;
-      padding: 16px;
+      max-width: 850px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      -webkit-overflow-scrolling: touch;
+      gap: 18px;
     }
 
     .section-card {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 16px;
+      border-radius: 14px;
+      padding: 18px;
       box-shadow: var(--shadow);
     }
 
-    .files-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-
-    .files-title {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-
-    .empty-files {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      font-style: italic;
-      text-align: center;
-      padding: 12px 0;
-    }
-
-    .file-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .file-chip {
-      background: #f1f5f9;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 6px 10px;
+    .section-title {
       font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 6px;
-      touch-action: manipulation;
+    }
+
+    .badge-status {
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #fef3c7;
+      color: #92400e;
+      font-weight: 700;
+    }
+    .badge-status.sealed {
+      background: #dcfce7;
+      color: var(--success-green);
     }
 
     .screen-viewport {
       background: #ffffff;
-      border: 2px dashed var(--border-color);
-      border-radius: 16px;
-      min-height: 220px;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      text-align: center;
-      gap: 10px;
-      box-shadow: var(--shadow);
+      gap: 12px;
     }
 
-    .screen-viewport-title {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--brand-purple);
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
+    .viewport-meta {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .viewport-content {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text-main);
+      white-space: pre-wrap;
     }
 
     .parameters-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 12px;
     }
 
@@ -204,7 +187,7 @@
     }
 
     .param-label {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
@@ -214,81 +197,61 @@
       background: #f8fafc;
       border: 1px solid var(--border-color);
       border-radius: 8px;
-      padding: 8px 10px;
+      padding: 10px 12px;
       font-size: 0.85rem;
       color: var(--text-main);
       outline: none;
-      width: 100%;
-      touch-action: manipulation;
     }
 
     .param-input:focus {
-      border-color: var(--brand-purple);
+      border-color: var(--accent-blue);
       background: #ffffff;
     }
 
-    .bottom-controls {
-      background: var(--card-bg);
-      border-top: 1px solid var(--border-color);
-      padding: 12px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      flex-shrink: 0;
-    }
-
-    .input-form {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: #f1f5f9;
-      border: 1px solid var(--border-color);
-      border-radius: 24px;
-      padding: 4px 8px 4px 12px;
-    }
-
-    .text-input {
-      flex: 1;
-      background: none;
-      border: none;
-      color: var(--text-main);
-      font-size: 0.95rem;
-      outline: none;
-      padding: 8px 0;
-      touch-action: manipulation;
-    }
-
-    #file-input {
-      display: none;
-    }
-
-    .btn-send {
-      background: var(--brand-purple);
+    .btn-seal-capsule {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #c5a059 0%, #eab308 100%);
       color: #ffffff;
       border: none;
-      border-radius: 50%;
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.95rem;
       cursor: pointer;
-      flex-shrink: 0;
-      touch-action: manipulation;
-      user-select: none;
+      box-shadow: 0 4px 12px rgba(197, 160, 89, 0.3);
+      transition: all 0.2s ease;
+      margin-top: 10px;
+    }
+
+    .btn-seal-capsule:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(197, 160, 89, 0.45);
+    }
+
+    .btn-seal-capsule:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    footer {
+      background: var(--card-bg);
+      border-top: 1px solid var(--border-color);
+      padding: 16px 20px;
+      text-align: center;
+      margin-top: auto;
     }
 
     .cert-badge {
-      background: #f8fafc;
+      background: var(--bg-color);
       border: 1px solid var(--border-color);
       border-radius: 8px;
-      padding: 8px;
-      text-align: center;
-      font-size: 0.75rem;
+      padding: 10px;
+      max-width: 850px;
+      margin: 0 auto;
+      font-family: ui-monospace, monospace;
+      font-size: 0.74rem;
       color: var(--text-muted);
-      font-family: monospace;
-      font-weight: 600;
-      user-select: none;
     }
   </style>
 </head>
@@ -296,178 +259,159 @@
 
   <header class="app-header">
     <div class="header-left">
-      <a href="./index.html" class="brand-identity" id="brand-logo-link" title="Inicio">
-        <svg class="brand-logo-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+      <a href="/" class="brand-identity" title="Ir a la Raíz">
+        <div class="dna-box">
+          <svg viewBox="0 0 120 240" width="28" height="38" preserveAspectRatio="xMidYMid meet" class="dna-icon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="hebraFondo" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#b03a8a" />
+                <stop offset="35%" stop-color="#704fa0" />
+                <stop offset="70%" stop-color="#3b7cb3" />
+                <stop offset="100%" stop-color="#4aa47a" />
+              </linearGradient>
+              <linearGradient id="hebraFrente" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#d95438" />
+                <stop offset="100%" stop-color="#eab308" />
+              </linearGradient>
+            </defs>
+            <path d="M30,20 Q90,70 30,120 T30,220" fill="none" stroke="url(#hebraFondo)" stroke-width="16" stroke-linecap="round" />
+            <path d="M90,20 Q30,70 90,120 T90,220" fill="none" stroke="url(#hebraFrente)" stroke-width="16" stroke-linecap="round" />
+          </svg>
+        </div>
+        <span class="text-omnih">OMNIH</span>
       </a>
     </div>
 
     <div class="header-right">
-      <button class="icon-btn" title="Configuración" id="btn-config" type="button">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="3"></circle>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-        </svg>
-      </button>
-
-      <button class="icon-btn" title="Regresar" id="btn-back" type="button">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="19" y1="12" x2="5" y2="12"></line>
-          <polyline points="12 19 5 12 12 5"></polyline>
-        </svg>
-      </button>
-
-      <button class="btn-action-sm" id="btn-file-list" type="button">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-          <polyline points="14 2 14 8 20 8"></polyline>
-          <line x1="16" y1="13" x2="8" y2="13"></line>
-          <line x1="16" y1="17" x2="8" y2="17"></line>
-        </svg>
-        Listado de archivos
-      </button>
+      <a href="/central" class="btn-nav-taller">← Volver al Taller</a>
     </div>
   </header>
 
   <main class="main-container">
 
     <section class="section-card">
-      <div class="files-header">
-        <span class="files-title">Documentos en la Cápsula del Tiempo</span>
+      <div class="section-title">
+        <span>Contenido Testimonial Activo</span>
+        <span class="badge-status" id="badge-estado">Listo para Sellado</span>
       </div>
-      <div id="files-container">
-        <div class="empty-files" id="empty-files-msg">No hay documentos cargados en la Cápsula.</div>
-        <div class="file-list" id="file-list"></div>
+      <div class="screen-viewport" id="screen-viewport">
+        <div class="viewport-meta">
+          <span><strong>Preservador:</strong> <span id="meta-autor">No detectado</span></span>
+          <span><strong>Vínculo:</strong> <span id="meta-vinculo">Soberano</span></span>
+          <span><strong>Anexos:</strong> <span id="meta-anexos">0</span></span>
+        </div>
+        <div class="viewport-content" id="meta-cuerpo">
+          Esperando transferencia de testimonio desde el Taller Operativo (/central)...
+        </div>
       </div>
-    </section>
-
-    <section class="screen-viewport" id="screen-viewport">
-      <span class="screen-viewport-title">Pantalla Amplia de Vista Previa</span>
-      <p style="font-size: 0.85rem; color: var(--text-muted);">
-        El documento cargado o la historia contextualizada se desplegará en esta pantalla para su revisión.
-      </p>
     </section>
 
     <section class="section-card">
-      <div class="files-title" style="margin-bottom: 12px;">Parámetros de Depósito y Preservación</div>
+      <div class="section-title">Parámetros de Depósito y Preservación Histórica</div>
       <div class="parameters-grid">
         <div class="param-group">
-          <label class="param-label" for="param-date">Fecha de Registro</label>
-          <input type="date" class="param-input" id="param-date">
+          <label class="param-label" for="param-date">Fecha de Depósito (UTC)</label>
+          <input type="date" class="param-input" id="param-date" readonly>
         </div>
         <div class="param-group">
-          <label class="param-label" for="param-time">Hora UTC</label>
-          <input type="time" class="param-input" id="param-time">
+          <label class="param-label" for="param-time">Hora de Sellado (UTC)</label>
+          <input type="text" class="param-input" id="param-time" readonly>
         </div>
         <div class="param-group">
           <label class="param-label" for="param-hibernation">Hibernación (Meses)</label>
-          <input type="number" class="param-input" placeholder="Ej: 12, 24, 36..." id="param-hibernation" inputmode="numeric">
+          <input type="number" class="param-input" id="param-hibernation" value="12" min="1" max="1200">
         </div>
         <div class="param-group">
-          <label class="param-label" for="param-release">Fecha de Liberación</label>
-          <input type="date" class="param-input" id="param-release">
+          <label class="param-label" for="param-release">Fecha de Apertura Estimada</label>
+          <input type="date" class="param-input" id="param-release" readonly>
         </div>
       </div>
+
+      <button type="button" class="btn-seal-capsule" id="btnSealCapsule">SELLAR CÁPSULA INMUTABLE</button>
     </section>
 
   </main>
 
-  <footer class="bottom-controls">
-    <form class="input-form" onsubmit="event.preventDefault();">
-      <input type="file" id="file-input" accept=".pdf,.txt,.doc,.docx,.json,.csv" multiple />
-      
-      <label for="file-input" class="icon-btn" title="Adjuntar documento" style="color: var(--text-muted);">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
-        </svg>
-      </label>
-
-      <input type="text" class="text-input" placeholder="Contextualizar el documento..." id="message-input" autocomplete="off" inputmode="text" enterkeyhint="send">
-
-      <button type="submit" class="btn-send" id="send-btn" title="Registrar">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="22" y1="2" x2="11" y2="13"/>
-          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-        </svg>
-      </button>
-    </form>
-
+  <footer>
     <div class="cert-badge">
-      ✓ CERTIFICACIÓN DE PRESENCIA HUMANA DIGITAL<br>
-      <span style="font-size: 0.7rem; opacity: 0.8;">Hash de Identidad: 0x7f8a9b2c3d4e1f</span>
+      <div style="color: var(--success-green); font-weight: 800; margin-bottom: 4px;">✓ CERTIFICACIÓN DE PRESENCIA HUMANA DIGITAL</div>
+      <div>Hash de Identidad Histórica: <strong id="user-hash-label">Calculando...</strong></div>
     </div>
   </footer>
 
   <script>
-    const fileInput = document.getElementById('file-input');
-    const fileList = document.getElementById('file-list');
-    const emptyFilesMsg = document.getElementById('empty-files-msg');
-    const screenViewport = document.getElementById('screen-viewport');
-    const btnBack = document.getElementById('btn-back');
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Hidratación del Hash Real de Sesión
+      const activeHash = sessionStorage.getItem('omnih_active_user');
+      const hashLabel = document.getElementById('user-hash-label');
+      hashLabel.textContent = activeHash || '0xANONIMO_REGISTRADO';
 
-    let loadedFiles = [];
+      // 2. Hidratación del Contrato de Datos desde central.html
+      const capsulaRaw = sessionStorage.getItem('omnih_capsula_activa');
+      const metaAutor = document.getElementById('meta-autor');
+      const metaVinculo = document.getElementById('meta-vinculo');
+      const metaAnexos = document.getElementById('meta-anexos');
+      const metaCuerpo = document.getElementById('meta-cuerpo');
+      const btnSeal = document.getElementById('btnSealCapsule');
+      const badgeEstado = document.getElementById('badge-estado');
 
-    btnBack.addEventListener('click', () => {
-      if (window.history.length > 1) {
-        window.history.back();
-      } else {
-        window.location.href = './index.html';
-      }
-    });
-
-    fileInput.addEventListener('change', (e) => {
-      const selected = Array.from(e.target.files);
-      if (selected.length > 0) {
-        loadedFiles = loadedFiles.concat(selected);
-        renderFiles();
-      }
-    });
-
-    function renderFiles() {
-      if (loadedFiles.length === 0) {
-        emptyFilesMsg.style.display = 'block';
-        fileList.innerHTML = '';
-        return;
+      let payload = null;
+      if (capsulaRaw) {
+        try {
+          payload = JSON.parse(capsulaRaw);
+          metaAutor.textContent = payload.autor || 'Preservador Soberano';
+          metaVinculo.textContent = payload.vinculo || 'Soberano';
+          metaAnexos.textContent = `${payload.imagenes_count || 0} Tesela(s)`;
+          metaCuerpo.textContent = payload.testimonio;
+        } catch (e) {
+          console.error('Error deserializando testimonio de la Cápsula');
+        }
       }
 
-      emptyFilesMsg.style.display = 'none';
-      fileList.innerHTML = '';
+      // 3. Calibración Reactiva de Fechas UTC
+      const now = new Date();
+      const dateInput = document.getElementById('param-date');
+      const timeInput = document.getElementById('param-time');
+      const hibernationInput = document.getElementById('param-hibernation');
+      const releaseInput = document.getElementById('param-release');
 
-      loadedFiles.forEach((file, idx) => {
-        const chip = document.createElement('div');
-        chip.className = 'file-chip';
-        chip.innerHTML = `
-          <span>📄 ${file.name}</span>
-          <span style="cursor:pointer; color:#ef4444; font-weight:bold;" onclick="removeFile(${idx})">&times;</span>
-        `;
-        fileList.appendChild(chip);
+      dateInput.value = now.toISOString().split('T')[0];
+      timeInput.value = now.toTimeString().split(' ')[0] + ' UTC';
+
+      function updateReleaseDate() {
+        const months = parseInt(hibernationInput.value, 10) || 12;
+        const releaseDate = new Date(now.getTime());
+        releaseDate.setMonth(releaseDate.getMonth() + months);
+        releaseInput.value = releaseDate.toISOString().split('T')[0];
+      }
+      updateReleaseDate();
+      hibernationInput.addEventListener('input', updateReleaseDate);
+
+      // 4. Sellado Inmutable del Registro
+      btnSeal.addEventListener('click', () => {
+        if (!payload) {
+          alert('No hay un testimonio cargado desde el Taller para sellar.');
+          return;
+        }
+
+        btnSeal.disabled = true;
+        btnSeal.textContent = 'CÁPSULA SELLADA HISTÓRICAMENTE';
+        badgeEstado.textContent = 'Inmutable';
+        badgeEstado.classList.add('sealed');
+        hibernationInput.disabled = true;
+
+        const registroSellado = {
+          ...payload,
+          hibernacion_meses: hibernationInput.value,
+          fecha_apertura: releaseInput.value,
+          hash_final: activeHash,
+          estado: 'Inmutable'
+        };
+
+        localStorage.setItem(`omnih_capsula_sellada_${Date.now()}`, JSON.stringify(registroSellado));
+        alert('Tu testimonio ha sido sellado con éxito en la Cápsula del Tiempo.');
       });
-
-      const lastFile = loadedFiles[loadedFiles.length - 1];
-      screenViewport.innerHTML = `
-        <span class="screen-viewport-title">Documento Activo en Pantalla</span>
-        <div style="font-weight: 700; font-size: 1.05rem; color: var(--brand-purple);">${lastFile.name}</div>
-        <p style="font-size: 0.8rem; color: var(--text-muted);">Tamaño: ${(lastFile.size / 1024).toFixed(1)} KB — Listo para preservación</p>
-      `;
-    }
-
-    function removeFile(idx) {
-      loadedFiles.splice(idx, 1);
-      renderFiles();
-      if (loadedFiles.length === 0) {
-        screenViewport.innerHTML = `
-          <span class="screen-viewport-title">Pantalla Amplia de Vista Previa</span>
-          <p style="font-size: 0.85rem; color: var(--text-muted);">El documento cargado o la historia contextualizada se desplegará en esta pantalla para su revisión.</p>
-        `;
-      }
-    }
-
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', () => {
-        document.body.style.height = `${window.visualViewport.height}px`;
-      });
-    }
+    });
   </script>
 </body>
-        </html>
+</html>
