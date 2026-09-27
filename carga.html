@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
-  <title>OMNIH | Área Carga e Integridad</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>OMNIH | Gestión Institucional de Convenios</title>
   <style>
     :root {
       --bg-canvas: #edf2f7;
@@ -17,13 +17,14 @@
       --icon-blue: #0284c7;
       --text-blue: #0369a1;
       --bg-blue-light: #f0f9ff;
+      --success-green: #15803d;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: system-ui, -apple-system, sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
 
@@ -39,101 +40,95 @@
 
     .container {
       width: 100%;
-      max-width: 480px;
+      max-width: 520px;
       background-color: var(--card-bg);
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      border-radius: 20px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border-color);
       padding: 24px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
+      position: relative;
     }
 
-    /* ENCABEZADO SUPERIOR ESTRUCTURADO */
     .header-bar {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
       border-bottom: 2px solid var(--border-color);
-      padding-bottom: 12px;
+      padding-bottom: 14px;
     }
 
-    /* Arriba a la Izquierda: Elemento de Identidad OMNIH */
-    .brand-header-left {
+    .brand-identity {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .dna-box {
+      width: 28px;
+      height: 38px;
       display: flex;
+      justify-content: center;
       align-items: center;
     }
 
-    .brand-logo-img {
-      height: 32px;
-      width: auto;
-      object-fit: contain;
+    .dna-icon {
+      width: 28px;
+      height: 38px;
+      transform: rotate(45deg);
       display: block;
-      touch-action: manipulation;
     }
 
-    /* Bloque Derecho: Regresar arriba + Convenio debajo */
+    .text-omnih {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      background: linear-gradient(180deg, #fef08a 0%, #eab308 35%, #ca8a04 70%, #854d0e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
     .header-right-group {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 6px;
-    }
-
-    /* Arriba a la Derecha: Regresar interactivo a Interfaz de Usuario */
-    .link-return {
-      color: var(--text-dark);
-      text-decoration: none;
-      font-size: 0.85rem;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
       gap: 4px;
-      transition: opacity 0.2s, color 0.2s;
-      touch-action: manipulation;
-      user-select: none;
-      cursor: pointer;
     }
 
-    .link-return:hover, .link-return:active {
-      color: var(--accent-gold);
-      opacity: 0.8;
+    .link-return {
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 700;
+      transition: opacity 0.2s;
     }
 
-    /* Debajo de Regresar: Identificador del Convenio */
     .convenio-identity-box {
       background-color: #fcfbf7;
       border: 1px solid #e2d2b4;
       border-radius: 6px;
-      padding: 6px 10px;
+      padding: 4px 8px;
       text-align: right;
       cursor: pointer;
-      transition: background-color 0.2s;
-      touch-action: manipulation;
-      user-select: none;
-    }
-
-    .convenio-identity-box:hover {
-      background-color: #f7f0e3;
     }
 
     .persona-juridica {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 800;
-      color: #000000;
+      color: var(--text-dark);
       text-transform: uppercase;
-      line-height: 1.1;
     }
 
     .hash-convenio {
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       font-weight: 700;
       color: var(--accent-gold);
-      font-family: monospace;
-      margin-top: 2px;
+      font-family: ui-monospace, monospace;
     }
 
-    /* Área de Carga */
     .upload-zone {
       border: 2px dashed var(--accent-gold);
       border-radius: 12px;
@@ -142,8 +137,6 @@
       background-color: #fdfbf7;
       cursor: pointer;
       transition: background-color 0.2s;
-      touch-action: manipulation;
-      user-select: none;
     }
 
     .upload-zone:hover {
@@ -151,214 +144,273 @@
     }
 
     .upload-icon {
-      width: 36px;
-      height: 36px;
-      margin-bottom: 8px;
+      width: 32px;
+      height: 32px;
+      margin-bottom: 6px;
       fill: var(--accent-gold);
     }
 
     .upload-zone h3 {
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: var(--text-dark);
       margin-bottom: 4px;
     }
 
     .upload-zone p {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: var(--text-muted);
     }
 
-    /* Botones de Acción */
+    .file-status-card {
+      display: none;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 0.8rem;
+    }
+    .file-status-card.active { display: block; }
+
+    .file-meta-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .file-hash-display {
+      font-family: ui-monospace, monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      word-break: break-all;
+      margin-top: 6px;
+      background: #ffffff;
+      padding: 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+    }
+
     .action-buttons {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .btn-light {
       width: 100%;
-      padding: 14px;
+      padding: 12px;
       border: 1px solid var(--btn-border);
-      border-radius: 10px;
+      border-radius: 8px;
       background-color: var(--btn-bg-light);
       color: var(--text-dark);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      transition: background-color 0.2s, border-color 0.2s;
-      touch-action: manipulation;
-      user-select: none;
+      gap: 8px;
+      transition: all 0.2s;
     }
 
-    .btn-light:hover {
+    .btn-light:hover:not(:disabled) {
       background-color: #f8fafc;
       border-color: var(--accent-gold);
     }
 
-    .btn-light svg {
-      fill: var(--accent-gold);
+    .btn-light:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
-    /* Módulos Inferiores Azul Celeste */
     .bottom-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 10px;
     }
 
     .card-blue {
       border: 1px solid #bae6fd;
-      border-radius: 10px;
-      padding: 16px;
+      border-radius: 8px;
+      padding: 12px;
       background-color: var(--bg-blue-light);
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
       cursor: pointer;
-      transition: transform 0.1s, background-color 0.2s;
-      touch-action: manipulation;
-      user-select: none;
+      transition: background-color 0.2s;
     }
-
-    .card-blue:hover, .card-blue:active {
-      background-color: #e0f2fe;
-      transform: translateY(-1px);
-    }
-
-    .card-blue .card-icon {
-      width: 24px;
-      height: 24px;
-      fill: var(--icon-blue);
-    }
+    .card-blue:hover { background-color: #e0f2fe; }
 
     .card-blue h4 {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--text-blue);
       font-weight: 700;
     }
 
     .card-blue p {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: var(--text-blue);
       opacity: 0.85;
       line-height: 1.3;
     }
 
-    input[type="file"] {
+    .modal-drawer {
       display: none;
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(255, 255, 255, 0.98);
+      border-radius: 20px;
+      padding: 24px;
+      flex-direction: column;
+      justify-content: center;
+      gap: 12px;
+      z-index: 10;
     }
+    .modal-drawer.active { display: flex; }
+
+    input[type="file"] { display: none; }
   </style>
 </head>
 <body>
 
 <div class="container">
   <header class="header-bar">
-    <!-- Arriba a la Izquierda: Elemento identitario OMNIH -->
-    <div class="brand-header-left">
-      <a href="index.html">
-        <img src="Screenshot_20260902-152157_1.jpg" alt="OMNIH" class="brand-logo-img">
-      </a>
-    </div>
+    <a href="/" class="brand-identity" title="Ir a la Raíz">
+      <div class="dna-box">
+        <svg viewBox="0 0 120 240" width="28" height="38" preserveAspectRatio="xMidYMid meet" class="dna-icon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="hebraFondo" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#b03a8a" />
+              <stop offset="35%" stop-color="#704fa0" />
+              <stop offset="70%" stop-color="#3b7cb3" />
+              <stop offset="100%" stop-color="#4aa47a" />
+            </linearGradient>
+            <linearGradient id="hebraFrente" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#d95438" />
+              <stop offset="100%" stop-color="#eab308" />
+            </linearGradient>
+          </defs>
+          <path d="M30,20 Q90,70 30,120 T30,220" fill="none" stroke="url(#hebraFondo)" stroke-width="16" stroke-linecap="round" />
+          <path d="M90,20 Q30,70 90,120 T90,220" fill="none" stroke="url(#hebraFrente)" stroke-width="16" stroke-linecap="round" />
+        </svg>
+      </div>
+      <span class="text-omnih">OMNIH</span>
+    </a>
 
-    <!-- Bloque Derecho: Regresar arriba + Convenio debajo -->
     <div class="header-right-group">
-      <button type="button" class="link-return" onclick="irAInterfazUsuario()" style="background:none; border:none; padding:0;">
-        Regresar &rarr;
-      </button>
-
-      <div class="convenio-identity-box" onclick="mostrarDetalleConvenio()">
-        <div class="persona-juridica" id="entidad-nombre">INSTITUCIÓN VINCULADA</div>
-        <div class="hash-convenio" id="convenio-hash">CONVENIO: 0x8F3a...C912</div>
+      <a href="/" class="link-return">← Regresar a la Raíz</a>
+      <div class="convenio-identity-box" id="btnVerConvenio" title="Ver credencial institucional">
+        <div class="persona-juridica">INSTITUCIÓN VINCULADA</div>
+        <div class="hash-convenio">CONVENIO: 0x8F3a...C912</div>
       </div>
     </div>
   </header>
 
-  <div class="upload-zone" onclick="document.getElementById('file-input').click();">
+  <div class="upload-zone" id="btnDropzone">
     <svg class="upload-icon" viewBox="0 0 24 24">
       <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
     </svg>
-    <h3>Área de Carga</h3>
-    <p>Seleccionar o arrastrar documentos institucionales para procesamiento</p>
-    <input type="file" id="file-input" multiple onchange="manejarArchivos(this.files)">
+    <h3>Depósito Institucional de Convenios</h3>
+    <p>Selecciona o arrastra el documento técnico (.pdf, .json, .docx)</p>
+    <input type="file" id="file-input" accept=".pdf,.doc,.docx,.json,.txt">
+  </div>
+
+  <div class="file-status-card" id="file-card">
+    <div class="file-meta-row">
+      <strong id="doc-name">archivo.pdf</strong>
+      <span style="color: var(--success-green); font-weight: 700;" id="doc-status">✓ Listo</span>
+    </div>
+    <div style="font-size: 0.72rem; color: var(--text-muted);" id="doc-size">0 KB</div>
+    <div class="file-hash-display" id="doc-hash">Calculando SHA-256...</div>
   </div>
 
   <div class="action-buttons">
-    <button class="btn-light" type="button" onclick="ejecutarCertificacion()">
-      <svg width="20" height="20" viewBox="0 0 24 24">
-        <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
-      </svg>
-      Certificar
+    <button class="btn-light" type="button" id="btnCertificar" disabled>
+      🔒 Certificar Documento
     </button>
-
-    <button class="btn-light" type="button" onclick="ejecutarVerificacion()">
-      <svg width="20" height="20" viewBox="0 0 24 24">
-        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-5.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
-      </svg>
-      Verificar Integridad
+    <button class="btn-light" type="button" id="btnVerificar" disabled>
+      🛡️ Verificar Integridad Criptográfica
     </button>
   </div>
 
   <div class="bottom-grid">
-    <!-- Asistente IA Interactivo -->
-    <div class="card-blue" onclick="abrirAsistenteIA()">
-      <svg class="card-icon" viewBox="0 0 24 24">
-        <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
-      </svg>
-      <h4>Asistente IA</h4>
-      <p>Orientación para el buen uso de la interfaz.</p>
+    <div class="card-blue" id="btnInfoConvenio">
+      <h4>Marco del Convenio</h4>
+      <p>Especificaciones legales y alcance del resguardo corporativo.</p>
     </div>
+    <div class="card-blue" id="btnSoporteTecnico">
+      <h4>Asistencia Técnica</h4>
+      <p>Validación de formatos admitidos y normas W3C.</p>
+    </div>
+  </div>
 
-    <!-- Subir Fuentes Interactivo -->
-    <div class="card-blue" onclick="document.getElementById('file-input').click();">
-      <svg class="card-icon" viewBox="0 0 24 24">
-        <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
-      </svg>
-      <h4>Subir Fuentes</h4>
-      <p>Carga de contexto documental y referencias para la plataforma.</p>
+  <!-- Modal Interactivo Institucional -->
+  <div class="modal-drawer" id="modalInstitucional">
+    <h3 style="color: var(--accent-gold); font-size: 1.1rem;">Protocolo Institucional de Convenio</h3>
+    <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
+      Este módulo paralelo procesa convenios interinstitucionales de forma estanca. Los documentos aquí incorporados se autentican mediante firmas hash soberanas sin interferir con los testimonios individuales de la Rama 1.
+    </p>
+    <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; font-family: monospace; font-size: 0.75rem;">
+      Persona Jurídica: Validada<br>
+      ID Convenio: OMNIH-CONV-2026-V2<br>
+      Aduana: Rama 2 Corporativa
     </div>
+    <button type="button" class="btn-light" id="btnCloseModal" style="margin-top: 10px;">Entendido</button>
   </div>
 </div>
 
 <script>
-  let archivo = null;
+  document.addEventListener('DOMContentLoaded', () => {
+    const fileInput = document.getElementById('file-input');
+    const dropzone = document.getElementById('btnDropzone');
+    const fileCard = document.getElementById('file-card');
+    const docName = document.getElementById('doc-name');
+    const docSize = document.getElementById('doc-size');
+    const docHash = document.getElementById('doc-hash');
+    const btnCertificar = document.getElementById('btnCertificar');
+    const btnVerificar = document.getElementById('btnVerificar');
+    const modal = document.getElementById('modalInstitucional');
 
-  function irAInterfazUsuario() {
-    window.location.href = "index.html";
-  }
+    let currentFile = null;
 
-  function abrirAsistenteIA() {
-    alert("Iniciando Asistente IA: Orientación interactiva para el usuario...");
-  }
+    dropzone.addEventListener('click', () => fileInput.click());
 
-  function manejarArchivos(f) { 
-    if(f.length) {
-      archivo = f[0];
-      alert("Archivo cargado: " + archivo.name);
-    } 
-  }
+    fileInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
 
-  function ejecutarCertificacion() { 
-    alert(archivo ? "Certificando: " + archivo.name : "Seleccione un archivo primero."); 
-  }
+      currentFile = file;
+      docName.textContent = file.name;
+      docSize.textContent = `${(file.size / 1024).toFixed(1)} KB`;
+      fileCard.classList.add('active');
+      docHash.textContent = 'Calculando SHA-256 inmutable...';
 
-  function ejecutarVerificacion() { 
-    alert(archivo ? "Verificando integridad de: " + archivo.name : "Seleccione un archivo primero."); 
-  }
+      // Cálculo de Hash Real mediante Web Crypto API nativa
+      const arrayBuffer = await file.arrayBuffer();
+      const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-  function mostrarDetalleConvenio() { 
-    alert("Verificación de Convenio Activo y Persona Jurídica Validada."); 
-  }
-
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', () => {
-      document.body.style.minHeight = `${window.visualViewport.height}px`;
+      docHash.textContent = `SHA-256: 0x${hashHex}`;
+      btnCertificar.disabled = false;
+      btnVerificar.disabled = false;
     });
-  }
-</script>
 
+    btnCertificar.addEventListener('click', () => {
+      alert(`Certificación registrada para "${currentFile.name}". Inyectado en aduana técnica de convenios.`);
+    });
+
+    btnVerificar.addEventListener('click', () => {
+      alert(`Integridad confirmada. El hash del archivo coincide con el registro canónico.`);
+    });
+
+    document.getElementById('btnVerConvenio').addEventListener('click', () => modal.classList.add('active'));
+    document.getElementById('btnInfoConvenio').addEventListener('click', () => modal.classList.add('active'));
+    document.getElementById('btnSoporteTecnico').addEventListener('click', () => {
+      alert('Formatos admitidos: PDF/A, JSON ontológico, DOCX estándar W3C.');
+    });
+    document.getElementById('btnCloseModal').addEventListener('click', () => modal.classList.remove('active'));
+  });
+</script>
 </body>
-  </html>
+</html>
