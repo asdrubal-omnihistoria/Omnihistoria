@@ -1,2 +1,2 @@
 # Omnihistoria
-OMNIH será un protocolo descentralizado, concebido para resguardo la memoria digital de forma inmutable. Preservando los componentes de interés omnihistóricos, del gran mosaico de la humanidad en el presente, la historia del futuro  contada por sus protagonistas en un contexto tecnológico.
+OMNIH será cumplidas las etapas de subpuestaxen funcionamiento, un protocolo descentralizado, concebido para resguardo la memoria y huella digital de forma inmutable. Preservando los componentes de interés omnihistóricos del gran mosaico de unicidades (teselas) que representa la humanidad, la historia del futuro  contada por sus protagonistas en tiempo presente, en contexto tecnológico.
